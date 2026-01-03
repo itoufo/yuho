@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>伊東雄歩 Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">🚀 伊東雄歩</a>
+      <div class="links">
+        <a href="index.html" class="active">ダッシュボード</a>
+        <a href="articles.html">記事管理</a>
+        <a href="branding.html">ブランディング</a>
+        <a href="profile.html">プロフィール</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>ダッシュボード</h1>
+
+    <div class="grid grid-4" id="stats">
+      <div class="card stat-card">
+        <div class="stat-number" id="total-count">-</div>
+        <div class="stat-label">総記事数</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-number" id="idea-count">-</div>
+        <div class="stat-label">アイデア</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-number" id="drafting-count">-</div>
+        <div class="stat-label">執筆中</div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-number" id="published-count">-</div>
+        <div class="stat-label">公開済み</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>ブランディング別</h2>
+        </div>
+        <table>
+          <thead><tr><th>タイプ</th><th>記事数</th></tr></thead>
+          <tbody id="branding-stats"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>最近の更新</h2>
+          <a href="articles.html" class="btn btn-secondary btn-sm">すべて見る</a>
+        </div>
+        <table>
+          <thead><tr><th>タイトル</th><th>ステータス</th></tr></thead>
+          <tbody id="recent-articles"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>クイックアクション</h2>
+      </div>
+      <div class="actions">
+        <a href="articles.html?action=new" class="btn btn-primary">+ 新規記事</a>
+        <a href="articles.html?status=drafting" class="btn btn-secondary">執筆中を見る</a>
+        <a href="articles.html?status=idea" class="btn btn-secondary">アイデア一覧</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 統計情報取得
+      const { data: articles } = await supabase.from('yuho_articles').select('*');
+
+      if (articles) {
+        document.getElementById('total-count').textContent = articles.length;
+        document.getElementById('idea-count').textContent = articles.filter(a => a.status === 'idea').length;
+        document.getElementById('drafting-count').textContent = articles.filter(a => a.status === 'drafting').length;
+        document.getElementById('published-count').textContent = articles.filter(a => a.status === 'published').length;
+
+        // ブランディング別
+        const byBranding = {};
+        articles.forEach(a => {
+          const key = a.branding_type || 'none';
+          byBranding[key] = (byBranding[key] || 0) + 1;
+        });
+
+        const brandingHtml = Object.entries(byBranding).map(([type, count]) => `
+          <tr>
+            <td><span class="badge badge-${type}">${type === 'none' ? '未分類' : type}</span></td>
+            <td>${count}</td>
+          </tr>
+        `).join('');
+        document.getElementById('branding-stats').innerHTML = brandingHtml || '<tr><td colspan="2" class="empty">データなし</td></tr>';
+
+        // 最近の更新
+        const recent = articles.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at)).slice(0, 5);
+        const recentHtml = recent.map(a => `
+          <tr>
+            <td><a href="articles.html?id=${a.id}">${a.title.substring(0, 40)}${a.title.length > 40 ? '...' : ''}</a></td>
+            <td><span class="badge badge-${a.status}">${a.status}</span></td>
+          </tr>
+        `).join('');
+        document.getElementById('recent-articles').innerHTML = recentHtml || '<tr><td colspan="2" class="empty">記事がありません</td></tr>';
+      }
+    });
+  </script>
+</body>
+</html>

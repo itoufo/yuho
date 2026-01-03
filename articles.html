@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>記事管理 | 伊東雄歩 Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">🚀 伊東雄歩</a>
+      <div class="links">
+        <a href="index.html">ダッシュボード</a>
+        <a href="articles.html" class="active">記事管理</a>
+        <a href="branding.html">ブランディング</a>
+        <a href="profile.html">プロフィール</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="card-header">
+      <h1>記事管理</h1>
+      <button class="btn btn-primary" onclick="openModal()">+ 新規記事</button>
+    </div>
+
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="filter-bar">
+        <select id="filter-status" onchange="loadArticles()">
+          <option value="">全ステータス</option>
+          <option value="idea">アイデア</option>
+          <option value="drafting">執筆中</option>
+          <option value="review">レビュー</option>
+          <option value="published">公開済み</option>
+        </select>
+        <select id="filter-branding" onchange="loadArticles()">
+          <option value="">全ブランディング</option>
+          <option value="social_misfit_ai">社会不適合×AI</option>
+          <option value="philosopher">哲学者モード</option>
+          <option value="tech_ceo">技術経営者</option>
+          <option value="learning_theory">学習理論専門家</option>
+        </select>
+        <a href="articles.html" style="color: #888;">リセット</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 40%">タイトル</th>
+            <th>ブランディング</th>
+            <th>カテゴリ</th>
+            <th>ステータス</th>
+            <th>更新日</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="articles-table"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h2 id="modal-title">新規記事</h2>
+      <form id="article-form">
+        <input type="hidden" id="article-id">
+        <div class="form-group">
+          <label>タイトル *</label>
+          <input type="text" id="title" required>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label>ブランディング</label>
+            <select id="branding_type">
+              <option value="">選択してください</option>
+              <option value="social_misfit_ai">社会不適合×AI</option>
+              <option value="philosopher">哲学者モード</option>
+              <option value="tech_ceo">技術経営者</option>
+              <option value="learning_theory">学習理論専門家</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>カテゴリ</label>
+            <input type="text" id="category" placeholder="例: 自己紹介, 失敗談">
+          </div>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label>ステータス</label>
+            <select id="status">
+              <option value="idea">アイデア</option>
+              <option value="drafting">執筆中</option>
+              <option value="review">レビュー</option>
+              <option value="published">公開済み</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>優先度 (0-10)</label>
+            <input type="number" id="priority" value="0" min="0" max="10">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>ファイルパス</label>
+          <input type="text" id="file_path" placeholder="例: drafts/my-article.md">
+        </div>
+        <div class="form-group">
+          <label>note.com URL</label>
+          <input type="url" id="note_url" placeholder="https://note.com/...">
+        </div>
+        <div class="actions" style="margin-top: 20px;">
+          <button type="submit" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-secondary" onclick="closeModal()">キャンセル</button>
+          <button type="button" class="btn btn-danger" id="delete-btn" style="margin-left: auto; display: none;" onclick="deleteArticle()">削除</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let currentArticleId = null;
+
+    async function loadArticles() {
+      const status = document.getElementById('filter-status').value;
+      const branding = document.getElementById('filter-branding').value;
+
+      let query = supabase.from('yuho_articles').select('*').order('priority', { ascending: false }).order('updated_at', { ascending: false });
+
+      if (status) query = query.eq('status', status);
+      if (branding) query = query.eq('branding_type', branding);
+
+      const { data: articles, error } = await query;
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      const html = articles.map(a => `
+        <tr>
+          <td><a href="#" onclick="editArticle(${a.id}); return false;">${a.title.substring(0, 50)}${a.title.length > 50 ? '...' : ''}</a></td>
+          <td><span class="badge badge-${a.branding_type || 'none'}">${a.branding_type || '-'}</span></td>
+          <td>${a.category || '-'}</td>
+          <td><span class="badge badge-${a.status}">${a.status}</span></td>
+          <td style="color: #666; font-size: 0.85rem;">${formatDate(a.updated_at)}</td>
+          <td><button class="btn btn-secondary btn-sm" onclick="editArticle(${a.id})">編集</button></td>
+        </tr>
+      `).join('');
+
+      document.getElementById('articles-table').innerHTML = html || '<tr><td colspan="6" class="empty">記事がありません</td></tr>';
+    }
+
+    function openModal(article = null) {
+      currentArticleId = article?.id || null;
+      document.getElementById('modal-title').textContent = article ? '記事を編集' : '新規記事';
+      document.getElementById('article-id').value = article?.id || '';
+      document.getElementById('title').value = article?.title || '';
+      document.getElementById('branding_type').value = article?.branding_type || '';
+      document.getElementById('category').value = article?.category || '';
+      document.getElementById('status').value = article?.status || 'idea';
+      document.getElementById('priority').value = article?.priority || 0;
+      document.getElementById('file_path').value = article?.file_path || '';
+      document.getElementById('note_url').value = article?.note_url || '';
+      document.getElementById('delete-btn').style.display = article ? 'block' : 'none';
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+      currentArticleId = null;
+    }
+
+    async function editArticle(id) {
+      const { data: article } = await supabase.from('yuho_articles').select('*').eq('id', id).single();
+      if (article) openModal(article);
+    }
+
+    async function deleteArticle() {
+      if (!currentArticleId || !confirm('本当に削除しますか？')) return;
+
+      const { error } = await supabase.from('yuho_articles').delete().eq('id', currentArticleId);
+
+      if (error) {
+        showToast('削除に失敗しました', 'error');
+      } else {
+        showToast('削除しました');
+        closeModal();
+        loadArticles();
+      }
+    }
+
+    document.getElementById('article-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        title: document.getElementById('title').value,
+        branding_type: document.getElementById('branding_type').value || null,
+        category: document.getElementById('category').value || null,
+        status: document.getElementById('status').value,
+        priority: parseInt(document.getElementById('priority').value) || 0,
+        file_path: document.getElementById('file_path').value || null,
+        note_url: document.getElementById('note_url').value || null,
+        updated_at: new Date().toISOString()
+      };
+
+      let result;
+      if (currentArticleId) {
+        result = await supabase.from('yuho_articles').update(data).eq('id', currentArticleId);
+      } else {
+        result = await supabase.from('yuho_articles').insert(data);
+      }
+
+      if (result.error) {
+        showToast('保存に失敗しました', 'error');
+        console.error(result.error);
+      } else {
+        showToast(currentArticleId ? '更新しました' : '作成しました');
+        closeModal();
+        loadArticles();
+      }
+    });
+
+    // 初期化
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = getParams();
+      if (params.status) document.getElementById('filter-status').value = params.status;
+      if (params.branding_type) document.getElementById('filter-branding').value = params.branding_type;
+      if (params.action === 'new') openModal();
+      loadArticles();
+    });
+
+    // ESCでモーダル閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>

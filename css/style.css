@@ -1,0 +1,93 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e0e0e0; min-height: 100vh; }
+a { color: #60a5fa; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+/* Navigation */
+nav { background: #1a1a1a; border-bottom: 1px solid #333; padding: 15px 0; position: sticky; top: 0; z-index: 100; }
+.nav-inner { display: flex; align-items: center; gap: 30px; }
+.logo { font-size: 1.2rem; font-weight: bold; color: #fff !important; }
+.links { display: flex; gap: 20px; }
+.links a { color: #999; }
+.links a:hover, .links a.active { color: #fff; text-decoration: none; }
+
+/* Typography */
+h1 { font-size: 1.8rem; margin-bottom: 20px; }
+h2 { font-size: 1.3rem; margin-bottom: 15px; color: #ccc; }
+
+/* Cards */
+.card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+
+/* Grid */
+.grid { display: grid; gap: 20px; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+/* Stats */
+.stat-card { text-align: center; padding: 25px; }
+.stat-number { font-size: 2.5rem; font-weight: bold; color: #60a5fa; }
+.stat-label { color: #888; margin-top: 5px; }
+
+/* Buttons */
+.btn { display: inline-block; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem; text-decoration: none !important; }
+.btn-primary { background: #3b82f6; color: #fff; }
+.btn-primary:hover { background: #2563eb; }
+.btn-secondary { background: #333; color: #fff; }
+.btn-secondary:hover { background: #444; }
+.btn-danger { background: #dc2626; color: #fff; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-sm { padding: 4px 10px; font-size: 0.8rem; }
+
+/* Badges */
+.badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; }
+.badge-idea { background: #374151; color: #9ca3af; }
+.badge-drafting { background: #1e3a5f; color: #60a5fa; }
+.badge-review { background: #3f3f00; color: #fbbf24; }
+.badge-published { background: #14532d; color: #4ade80; }
+.badge-social_misfit_ai { background: #7c3aed20; color: #a78bfa; }
+.badge-philosopher { background: #0891b220; color: #22d3ee; }
+.badge-tech_ceo { background: #ea580c20; color: #fb923c; }
+.badge-learning_theory { background: #16a34a20; color: #4ade80; }
+.badge-none { background: #333; color: #888; }
+
+/* Tables */
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #333; }
+th { color: #888; font-weight: normal; font-size: 0.85rem; }
+tr:hover { background: #222; }
+
+/* Forms */
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; color: #888; font-size: 0.9rem; }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 10px; border: 1px solid #333; border-radius: 6px;
+  background: #0f0f0f; color: #fff; font-size: 1rem;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: #3b82f6;
+}
+
+/* Actions */
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.empty { color: #666; text-align: center; padding: 40px; }
+
+/* Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.active { display: flex; }
+.modal { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+.modal h2 { margin-bottom: 20px; }
+
+/* Toast */
+.toast { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 8px; color: #fff; z-index: 2000; animation: slideIn 0.3s ease; }
+.toast-success { background: #16a34a; }
+.toast-error { background: #dc2626; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* Filter Bar */
+.filter-bar { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+.filter-bar select { padding: 8px 12px; background: #0f0f0f; border: 1px solid #333; color: #fff; border-radius: 6px; }

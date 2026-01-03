@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブランディング | 伊東雄歩 Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">🚀 伊東雄歩</a>
+      <div class="links">
+        <a href="index.html">ダッシュボード</a>
+        <a href="articles.html">記事管理</a>
+        <a href="branding.html" class="active">ブランディング</a>
+        <a href="profile.html">プロフィール</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>ブランディング戦略</h1>
+
+    <div class="grid grid-2" id="branding-cards"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: branding } = await supabase.from('yuho_branding').select('*');
+      const { data: articles } = await supabase.from('yuho_articles').select('branding_type');
+
+      const counts = {};
+      articles?.forEach(a => {
+        if (a.branding_type) {
+          counts[a.branding_type] = (counts[a.branding_type] || 0) + 1;
+        }
+      });
+
+      const html = branding?.map(b => `
+        <div class="card">
+          <div class="card-header">
+            <h2><span class="badge badge-${b.code}">${b.name}</span></h2>
+            <span style="color: #666;">${counts[b.code] || 0} 記事</span>
+          </div>
+          <p style="color: #888; margin-bottom: 15px;">${b.concept || ''}</p>
+          <table>
+            <tr><th style="width: 80px;">ターゲット</th><td>${b.target || '-'}</td></tr>
+            <tr><th>トーン</th><td>${b.tone || '-'}</td></tr>
+          </table>
+          <div style="margin-top: 15px;">
+            <a href="articles.html?branding_type=${b.code}" class="btn btn-secondary btn-sm">この記事を見る</a>
+            <a href="articles.html?action=new" class="btn btn-primary btn-sm">記事を追加</a>
+          </div>
+        </div>
+      `).join('') || '<p class="empty">ブランディングデータがありません</p>';
+
+      document.getElementById('branding-cards').innerHTML = html;
+    });
+  </script>
+</body>
+</html>
