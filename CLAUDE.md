@@ -118,11 +118,31 @@ note.comへの投稿を管理するためのダッシュボード。プロフィ
 
 ### テーブル構造
 ```sql
-yuho_articles (id, title, branding_type, category, status, file_path, note_url, priority, created_at, updated_at, published_at)
+-- コンテンツ管理
+yuho_articles (id, title, branding_type, category, status, file_path, priority, created_at, updated_at)
 yuho_branding (id, code, name, concept, target, tone)
 yuho_tags (id, name)
 yuho_article_tags (article_id, tag_id)
+
+-- マルチプラットフォーム管理
+yuho_platforms (id, code, name, description, content_type, typical_length)
+yuho_article_platforms (id, article_id, platform_id, status, url, scheduled_at, published_at, notes)
 ```
+
+### プラットフォーム
+| code | name | content_type |
+|------|------|--------------|
+| note | note | 長文記事 |
+| x | X (Twitter) | ショートテキスト |
+| youtube | YouTube | 動画 |
+| voicy | Voicy | 音声 |
+
+### プラットフォーム別ステータス
+- `planned`: 予定
+- `drafting`: 準備中
+- `scheduled`: 公開予約済み
+- `published`: 公開済み
+- `skipped`: スキップ
 
 ### ステータス
 - `idea`: アイデア
@@ -163,10 +183,14 @@ dashboard/
 ├── branding.md         # ブランディング戦略詳細
 ├── ideas/
 │   └── article-ideas.md  # 記事アイデア一覧
-├── drafts/
-│   └── my-story-failures.md  # 下書き記事
-└── content.db          # SQLiteバックアップ（旧）
+└── drafts/
+    └── my-story-failures.md  # 下書き記事
 ```
+
+## データ管理方針
+- **全データはSupabaseに集約**（ローカルDBは使用しない）
+- マルチプラットフォーム対応（note, X, YouTube, Voicy）
+- 各プラットフォームごとに個別のステータス管理が可能
 
 ---
 
@@ -237,3 +261,26 @@ curl -X POST 'https://bjnyvjtilklrfbnnnybi.supabase.co/rest/v1/yuho_articles' \
 - Supabase anon keyはjs/config.jsに記載（公開リポジトリ注意）
 - RLSポリシーは現在オープン（本番運用時は要設定）
 - 画像生成はnanobanana MCPを使用（Gemini経由）
+
+---
+
+## note.com 投稿ルール
+
+### Markdownテーブルは使えない
+note.comはMarkdownのテーブル記法（`| col1 | col2 |`）をサポートしていない。
+テーブルを使いたい場合は **nanobananaで画像化** して挿入する。
+
+```
+例: ADHDの特性テーブル → img/adhd-table.jpg として画像化済み
+```
+
+### 画像を積極的に挿入する
+記事には画像を積極的に挿入すること。テキストだけの記事は読まれにくい。
+- サムネイル画像（必須）
+- 本文中の挿入画像（セクションごとに1枚程度）
+- 図解・インフォグラフィック（複雑な概念の説明時）
+
+### 下書きデータ管理
+- 下書きは `js/drafts.js` で管理
+- ダッシュボード（index.html）から確認・コピー可能
+- 画像は `img/` フォルダに保存

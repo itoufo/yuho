@@ -75,11 +75,20 @@
         <a href="articles.html?status=idea" class="btn btn-secondary">アイデア一覧</a>
       </div>
     </div>
+
+    <div class="card" id="drafts-section">
+      <div class="card-header">
+        <h2>note.com 投稿用下書き</h2>
+      </div>
+      <div id="drafts-list"></div>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/drafts.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       // 統計情報取得
@@ -116,7 +125,145 @@
         `).join('');
         document.getElementById('recent-articles').innerHTML = recentHtml || '<tr><td colspan="2" class="empty">記事がありません</td></tr>';
       }
+
+      // 下書き表示
+      renderDrafts();
     });
+
+    function renderDrafts() {
+      const drafts = getDrafts();
+      const container = document.getElementById('drafts-list');
+
+      if (drafts.length === 0) {
+        container.innerHTML = '<p class="empty">下書きがありません</p>';
+        return;
+      }
+
+      container.innerHTML = drafts.map(draft => `
+        <div class="draft-item" style="border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-bottom:16px;">
+          <div style="display:flex;gap:16px;align-items:flex-start;">
+            <img src="${draft.thumbnail}" style="width:120px;height:68px;object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">
+            <div style="flex:1;">
+              <h3 style="margin:0 0 8px 0;font-size:1.1rem;">${draft.title}</h3>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+                <span class="badge badge-${draft.branding}">${draft.branding}</span>
+                ${draft.tags.map(t => `<span class="badge" style="background:#f1f5f9;color:#64748b;">${t}</span>`).join('')}
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-sm btn-primary" onclick="copyToClipboard('${draft.title.replace(/'/g, "\\'")}', this)">タイトルをコピー</button>
+                <button class="btn btn-sm btn-secondary" onclick="copyToClipboard('${draft.tags.join(', ')}', this)">タグをコピー</button>
+                <button class="btn btn-sm btn-secondary" onclick="showDraftModal('${draft.id}')">本文を表示</button>
+                <button class="btn btn-sm btn-secondary" onclick="showImagesModal('${draft.id}')">画像一覧</button>
+                ${draft.xPost ? `<button class="btn btn-sm btn-secondary" style="background:#000;color:#fff;" onclick="showXPostModal('${draft.id}')">X投稿</button>` : ''}
+                <a href="https://note.com/notes/new" target="_blank" class="btn btn-sm btn-secondary">note.comで作成</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showDraftModal(id) {
+      const draft = getDraftById(id);
+      if (!draft) return;
+
+      // モーダル作成
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;';
+      modal.innerHTML = `
+        <div style="background:white;border-radius:12px;max-width:800px;width:90%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
+          <div style="padding:16px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="margin:0;">${draft.title}</h3>
+            <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+          </div>
+          <div style="padding:16px 24px;border-bottom:1px solid #e2e8f0;display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="copyToClipboard(getDraftById('${id}').content, this)">本文をコピー（Markdown）</button>
+            <button class="btn btn-secondary" id="toggle-preview">プレビュー表示</button>
+          </div>
+          <div id="draft-content" style="padding:24px;overflow-y:auto;flex:1;">
+            <pre style="white-space:pre-wrap;font-family:inherit;margin:0;">${draft.content}</pre>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
+      // プレビュー切り替え
+      let showPreview = false;
+      document.getElementById('toggle-preview').onclick = function() {
+        showPreview = !showPreview;
+        const contentDiv = document.getElementById('draft-content');
+        if (showPreview) {
+          contentDiv.innerHTML = '<div class="article-preview">' + marked.parse(draft.content) + '</div>';
+          this.textContent = 'Markdown表示';
+        } else {
+          contentDiv.innerHTML = '<pre style="white-space:pre-wrap;font-family:inherit;margin:0;">' + draft.content + '</pre>';
+          this.textContent = 'プレビュー表示';
+        }
+      };
+    }
+
+    function showXPostModal(id) {
+      const draft = getDraftById(id);
+      if (!draft || !draft.xPost) return;
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;';
+      modal.innerHTML = \`
+        <div style="background:white;border-radius:12px;max-width:500px;width:90%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
+          <div style="padding:16px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;">
+            <h3 style="margin:0;">X投稿テキスト</h3>
+            <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#fff;">&times;</button>
+          </div>
+          <div style="padding:24px;overflow-y:auto;flex:1;">
+            <pre style="white-space:pre-wrap;font-family:inherit;margin:0 0 16px 0;background:#f8f9fa;padding:16px;border-radius:8px;">\${draft.xPost}</pre>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" style="background:#000;" onclick="copyToClipboard(getDraftById('\${id}').xPost, this)">コピー</button>
+              <a href="https://twitter.com/intent/tweet?text=\${encodeURIComponent(draft.xPost)}" target="_blank" class="btn btn-secondary">Xで投稿</a>
+            </div>
+            <p style="color:#6b7280;font-size:0.85rem;margin-top:16px;">\${draft.xPost.length}/280文字</p>
+          </div>
+        </div>
+      \`;
+      document.body.appendChild(modal);
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    }
+
+    function showImagesModal(id) {
+      const draft = getDraftById(id);
+      if (!draft || !draft.images) return;
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;';
+      modal.innerHTML = `
+        <div style="background:white;border-radius:12px;max-width:600px;width:90%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
+          <div style="padding:16px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
+            <h3 style="margin:0;">画像一覧（note投稿用）</h3>
+            <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;">&times;</button>
+          </div>
+          <div style="padding:24px;overflow-y:auto;flex:1;">
+            ${draft.images.map(img => `
+              <div style="margin-bottom:16px;padding:12px;border:1px solid #e2e8f0;border-radius:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                  <strong>${img.name}</strong>
+                  <button class="btn btn-sm btn-secondary" onclick="copyToClipboard('${img.path}', this)">パスをコピー</button>
+                </div>
+                <img src="${img.path}" style="width:100%;border-radius:4px;" />
+              </div>
+            `).join('')}
+            <p style="color:#6b7280;font-size:0.9rem;margin-top:16px;">
+              note.comでは画像を直接アップロードしてください。<br>
+              Finderで <code>dashboard/img/</code> を開いてドラッグ&ドロップ。
+            </p>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    }
   </script>
 </body>
 </html>
