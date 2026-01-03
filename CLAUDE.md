@@ -155,7 +155,7 @@ yuho_article_platforms (id, article_id, platform_id, status, url, scheduled_at, 
 ## ファイル構成
 
 ```
-dashboard/
+yuho/
 ├── index.html          # ダッシュボード（統計・概要）
 ├── articles.html       # 記事管理（CRUD）
 ├── branding.html       # ブランディング一覧
@@ -167,24 +167,18 @@ dashboard/
 │   └── app.js          # 共通ユーティリティ
 ├── img/
 │   └── brand-structure.jpg  # ブランド構造図（nanobanana生成）
+├── sql/                # SQLスクリプト
+├── scripts/            # 自動化スクリプト
+├── docs/               # ドキュメント類
+│   ├── profile.md      # プロフィール詳細（マスターデータ）
+│   ├── branding.md     # ブランディング戦略詳細
+│   ├── ideas/          # 記事アイデア一覧
+│   ├── drafts/         # 下書き記事
+│   └── outputs/        # 出力ファイル
 ├── netlify.toml        # Netlify設定
 ├── account-design.md   # アカウント設計書（詳細）
 ├── CLAUDE.md           # このファイル
 └── README.md           # プロジェクト概要
-```
-
----
-
-## 関連ファイル（dashboard外）
-
-```
-/Users/administrator/Dev/yuhoito/
-├── profile.md          # プロフィール詳細（マスターデータ）
-├── branding.md         # ブランディング戦略詳細
-├── ideas/
-│   └── article-ideas.md  # 記事アイデア一覧
-└── drafts/
-    └── my-story-failures.md  # 下書き記事
 ```
 
 ## データ管理方針
@@ -241,7 +235,7 @@ mcp__nanobanana__nanobanana_generate: テキストから画像生成
 
 ```bash
 # ローカル実行
-cd /Users/administrator/Dev/yuhoito/dashboard
+cd /Users/administrator/Dev/yuhoito
 npx serve . -p 3000
 
 # デプロイ（自動）
