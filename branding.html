@@ -30,8 +30,8 @@
   <script src="js/app.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const { data: branding } = await supabase.from('yuho_branding').select('*');
-      const { data: articles } = await supabase.from('yuho_articles').select('branding_type');
+      const { data: branding } = await supabaseClient.from('yuho_branding').select('*');
+      const { data: articles } = await supabaseClient.from('yuho_articles').select('branding_type');
 
       const counts = {};
       articles?.forEach(a => {
