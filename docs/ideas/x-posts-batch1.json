@@ -1,0 +1,161 @@
+[
+  {
+    "content": "会議中に別のこと考えてて、急に話振られてパニックになるやつ。\n\n俺だけじゃないよな？",
+    "category": "adhd_relatable",
+    "priority": 10
+  },
+  {
+    "content": "会社員2年で心が死にかけたので辞めた。\n\n後悔してない。\n\n向いてないことを認めるのに、5年もかかる必要はない。",
+    "category": "work_struggle",
+    "priority": 10
+  },
+  {
+    "content": "敬語が使えなくても、10年経営できてる。\n\n「普通」ができなくても、道はある。",
+    "category": "hope",
+    "priority": 10
+  },
+  {
+    "content": "訴訟2回、2000万損失、役員の裏切り。\n\nそれでも会社は続いてる。\n\n失敗で死ぬことはない。",
+    "category": "failure_story",
+    "priority": 10
+  },
+  {
+    "content": "「普通」を諦めたら、生きるのが楽になった。\n\n普通じゃない自分を認めた瞬間、戦う相手がいなくなった。",
+    "category": "hope",
+    "priority": 10
+  },
+  {
+    "content": "ADHDの過集中。\n\n6時間ぶっ通しで作業したあと、3日間何もできない。\n\nこれ、仕様です。",
+    "category": "adhd_relatable",
+    "priority": 9
+  },
+  {
+    "content": "「空気を読め」が一番難しい仕事だった。\n\n今は空気を読まなくていい環境を、自分で作った。",
+    "category": "work_struggle",
+    "priority": 9
+  },
+  {
+    "content": "AIは「普通」ができない人の味方だと思う。\n\n否定してこないし、何度聞いても怒らない。",
+    "category": "ai_life",
+    "priority": 9
+  },
+  {
+    "content": "「石の上にも三年」を信じて3年いたけど、石のままだった。\n\n環境を変えたら、花が咲いた。",
+    "category": "hope",
+    "priority": 9
+  },
+  {
+    "content": "社会のレールから外れたら、自分のレールが見えた。\n\n外れてよかった。",
+    "category": "hope",
+    "priority": 9
+  },
+  {
+    "content": "締め切り前日まで何もできないのに、前日だけ異常な集中力出るやつ。\n\nわかる人、手挙げて。",
+    "category": "adhd_relatable",
+    "priority": 8
+  },
+  {
+    "content": "IQ130超えても、敬語のテンプレがわからなくて毎回ググってた。\n\n知能と社会性は、別物。",
+    "category": "adhd_relatable",
+    "priority": 8
+  },
+  {
+    "content": "MENSAメンバーだけでチーム作ったら、全員が「俺が正しい」で崩壊した。\n\n頭が良いだけじゃ、チームは動かない。",
+    "category": "failure_story",
+    "priority": 8
+  },
+  {
+    "content": "本人訴訟で弁護士事務所に勝った。\n\n勝ったけど、心はボロボロだった。\n\n「勝訴」の裏側は、誰も教えてくれない。",
+    "category": "failure_story",
+    "priority": 8,
+    "related_article_id": 21
+  },
+  {
+    "content": "中学時代、トイレに閉じ込められて殴られた。\n\n死を考えたこともある。\n\nでも今、会社作って、結婚して、生きてる。\n\n逃げていい。生き延びろ。",
+    "category": "hope",
+    "priority": 8
+  },
+  {
+    "content": "「UFO! UFO!」って名前をからかわれてた。\n\n今は「雄歩」＝「英雄然として歩む」という意味を、誇りに思ってる。",
+    "category": "hope",
+    "priority": 8,
+    "related_article_id": 5
+  },
+  {
+    "content": "上位企業がトンズラして、2000万円消えた。\n\n3日間、何も食べられなかった。\n\nでも死ななかった。人間、意外と死なない。",
+    "category": "failure_story",
+    "priority": 7,
+    "related_article_id": 23
+  },
+  {
+    "content": "オフショア開発で、ブリッジSEが納品前日に失踪した。\n\n笑うしかなかった。\n\n今では笑い話。",
+    "category": "failure_story",
+    "priority": 7,
+    "related_article_id": 24
+  },
+  {
+    "content": "「報連相しろ」の意味がマジでわからなかった。\n\n何を、いつ、どのくらいの粒度で報告すればいいの？\n\nマニュアルがほしかった。",
+    "category": "work_struggle",
+    "priority": 7
+  },
+  {
+    "content": "飲み会の「無礼講」を真に受けて怒られた。\n\nルールがあるなら最初から言ってくれ。",
+    "category": "work_struggle",
+    "priority": 7
+  },
+  {
+    "content": "「普通」って、誰が決めたんだろう。\n\nその「普通」、本当に正しい？",
+    "category": "question",
+    "priority": 7
+  },
+  {
+    "content": "努力すれば報われるって、本当？\n\n方向を間違えた努力は、ただの消耗。",
+    "category": "question",
+    "priority": 7,
+    "related_article_id": 26
+  },
+  {
+    "content": "「失敗」と「経験」の違いは、捉え方だけ。\n\n同じ出来事でも、どう解釈するかで意味が変わる。",
+    "category": "question",
+    "priority": 7,
+    "related_article_id": 36
+  },
+  {
+    "content": "フリーランス経験ゼロで、いきなり株式会社を作った。\n\n「まずフリーランスから」という常識を疑った。\n\n10年経った今、後悔してない。",
+    "category": "hope",
+    "priority": 7,
+    "related_article_id": 17
+  },
+  {
+    "content": "タスク管理アプリを導入\n→3日で飽きる\n→新しいアプリ探す\n→ループ\n\nこれ、ADHDあるある。",
+    "category": "adhd_relatable",
+    "priority": 6
+  },
+  {
+    "content": "「メモしろ」って言われてメモしたのに、メモの存在を忘れる。\n\nメモの意味とは。",
+    "category": "adhd_relatable",
+    "priority": 6
+  },
+  {
+    "content": "興味ないことは本当に1ミリも頭に入らない。\n\n努力の問題じゃない。脳の仕様。",
+    "category": "adhd_relatable",
+    "priority": 6
+  },
+  {
+    "content": "150人月の大規模プロジェクトを生き延びた。\n\nオフショアトラブル、担当者変更、ブリッジSE失踪。\n\n地獄を見たけど、今は笑える。",
+    "category": "failure_story",
+    "priority": 6,
+    "related_article_id": 25
+  },
+  {
+    "content": "心理学・教育学に1000万円投資した。\n\n「教え方が下手」を克服するために。\n\n頭が良くても、伝え方は別スキル。",
+    "category": "hope",
+    "priority": 6
+  },
+  {
+    "content": "社会不適合がAI学んだら、意外と生きやすくなった。\n\nAIは「普通」を求めてこない。",
+    "category": "ai_life",
+    "priority": 6,
+    "related_article_id": 14
+  }
+]
