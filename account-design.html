@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アカウント設計 | 伊東雄歩 Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .brand-card { background: linear-gradient(180deg, #1a1a1a 0%, #111 100%); border-radius: 12px; padding: 25px; margin-bottom: 25px; }
+    .brand-card.purple { border-left: 4px solid #7c3aed; }
+    .brand-card.blue { border-left: 4px solid #0891b2; }
+    .brand-card.orange { border-left: 4px solid #ea580c; }
+    .brand-card.green { border-left: 4px solid #16a34a; }
+
+    .brand-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .brand-title { font-size: 1.4rem; margin-bottom: 5px; }
+    .brand-handle { color: #60a5fa; font-size: 0.9rem; }
+    .brand-phase { background: #333; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+    @media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-box { background: #0f0f0f; border: 1px solid #333; border-radius: 8px; padding: 15px; }
+    .info-box h4 { color: #888; font-size: 0.8rem; margin-bottom: 10px; text-transform: uppercase; }
+    .info-box ul { list-style: none; padding: 0; }
+    .info-box li { padding: 5px 0; color: #ccc; font-size: 0.9rem; border-bottom: 1px solid #222; }
+    .info-box li:last-child { border-bottom: none; }
+
+    .pillars { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+    .pillar { background: #1e293b; padding: 8px 15px; border-radius: 20px; font-size: 0.85rem; }
+    .pillar .pct { color: #60a5fa; margin-left: 5px; }
+
+    .tone-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tone-tag { background: #22c55e20; color: #4ade80; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; }
+    .tone-tag.warn { background: #dc262620; color: #f87171; }
+
+    .kpi-row { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+    .kpi-item { background: #0f0f0f; border: 1px solid #333; border-radius: 8px; padding: 15px; text-align: center; flex: 1; min-width: 100px; }
+    .kpi-number { font-size: 1.3rem; font-weight: bold; color: #60a5fa; }
+    .kpi-label { color: #888; font-size: 0.75rem; margin-top: 5px; }
+
+    .flow-diagram { background: #0f0f0f; border: 1px solid #333; border-radius: 12px; padding: 30px; margin: 30px 0; text-align: center; }
+    .flow-diagram pre { color: #ccc; font-size: 0.9rem; line-height: 1.6; }
+
+    .color-palette { display: flex; gap: 15px; margin: 15px 0; }
+    .color-swatch { width: 60px; height: 60px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #fff; }
+
+    .priority-section { background: linear-gradient(135deg, #1a1a2e 0%, #0f0f0f 100%); border-radius: 12px; padding: 30px; margin-top: 30px; }
+    .priority-section h2 { margin-bottom: 20px; }
+    .phase-item { display: flex; gap: 20px; padding: 15px 0; border-bottom: 1px solid #333; }
+    .phase-item:last-child { border-bottom: none; }
+    .phase-badge { background: #3b82f6; padding: 5px 12px; border-radius: 4px; font-size: 0.85rem; white-space: nowrap; height: fit-content; }
+    .phase-content h4 { margin-bottom: 5px; }
+    .phase-content p { color: #888; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">🚀 伊東雄歩</a>
+      <div class="links">
+        <a href="index.html">ダッシュボード</a>
+        <a href="articles.html">記事管理</a>
+        <a href="branding.html">ブランディング</a>
+        <a href="account-design.html" class="active">アカウント設計</a>
+        <a href="profile.html">プロフィール</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h1>アカウント設計</h1>
+
+    <!-- 全体構造図 -->
+    <div class="flow-diagram">
+      <pre>
+                    ┌─────────────────────────────────────┐
+                    │         伊東雄歩（本体）              │
+                    │      「令和のエジソン」               │
+                    └─────────────┬───────────────────────┘
+                                  │
+        ┌─────────────────────────┼─────────────────────────┐
+        │                         │                         │
+        ▼                         ▼                         ▼
+┌───────────────┐      ┌───────────────┐      ┌───────────────┐
+│  メインブランド  │      │  サブブランド   │      │  専門ブランド   │
+│  社会不適合×AI  │      │  哲学者モード   │      │ 技術経営/学習  │
+│    （集客）     │      │  （ファン化）   │      │   （権威性）   │
+└───────────────┘      └───────────────┘      └───────────────┘
+      </pre>
+    </div>
+
+    <!-- Brand 1: 社会不適合×AI -->
+    <div class="brand-card purple">
+      <div class="brand-header">
+        <div>
+          <h2 class="brand-title" style="color: #a78bfa;">1. 社会不適合×AI</h2>
+          <div class="brand-handle">@yuho_misfit</div>
+        </div>
+        <span class="brand-phase">Phase 1</span>
+      </div>
+
+      <p style="color: #ccc; margin-bottom: 20px;">「社会に馴染めなかった人がAIで逆転する方法を教える人」</p>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>ターゲット</h4>
+          <ul>
+            <li>会社で浮いている人</li>
+            <li>「普通」ができなくて辛い人</li>
+            <li>ADHD傾向がある人</li>
+            <li>AI活用に興味がある人</li>
+            <li>副業・起業志望者</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>プラットフォーム</h4>
+          <ul>
+            <li>Twitter（メイン）毎日3-5ツイート</li>
+            <li>note 週1-2本</li>
+            <li>YouTube（将来）</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4 style="color: #888; margin-bottom: 10px;">コンテンツ4本柱</h4>
+      <div class="pillars">
+        <span class="pillar">共感系<span class="pct">40%</span></span>
+        <span class="pillar">AI実践系<span class="pct">30%</span></span>
+        <span class="pillar">マインド系<span class="pct">20%</span></span>
+        <span class="pillar">実績・告知<span class="pct">10%</span></span>
+      </div>
+
+      <h4 style="color: #888; margin: 15px 0 10px;">トーン</h4>
+      <div class="tone-tags">
+        <span class="tone-tag">カジュアル</span>
+        <span class="tone-tag">一人称「僕」</span>
+        <span class="tone-tag">失敗談から入る</span>
+        <span class="tone-tag">共感→解決策</span>
+        <span class="tone-tag warn">× 上から目線</span>
+        <span class="tone-tag warn">× 煽り</span>
+      </div>
+
+      <h4 style="color: #888; margin: 20px 0 10px;">KPI目標（6ヶ月）</h4>
+      <div class="kpi-row">
+        <div class="kpi-item"><div class="kpi-number">5,000</div><div class="kpi-label">Twitterフォロワー</div></div>
+        <div class="kpi-item"><div class="kpi-number">10,000</div><div class="kpi-label">note月間PV</div></div>
+        <div class="kpi-item"><div class="kpi-number">500</div><div class="kpi-label">メルマガ/LINE登録</div></div>
+      </div>
+    </div>
+
+    <!-- Brand 2: 哲学者モード -->
+    <div class="brand-card blue">
+      <div class="brand-header">
+        <div>
+          <h2 class="brand-title" style="color: #22d3ee;">2. 哲学者モード</h2>
+          <div class="brand-handle">@yuho_think</div>
+        </div>
+        <span class="brand-phase">Phase 2</span>
+      </div>
+
+      <p style="color: #ccc; margin-bottom: 20px;">「常識を疑い、世界の見方を変える視点を提供する人」</p>
+
+      <div style="background: #dc262620; border: 1px solid #dc2626; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <p style="color: #f87171; font-size: 0.9rem;">⚠️ このアカウントは「バズらせない」— 数より深さ、わかる人にわかればいい</p>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>ターゲット</h4>
+          <ul>
+            <li>本をよく読む人</li>
+            <li>哲学・思想に興味がある人</li>
+            <li>「なぜ？」を考えるのが好きな人</li>
+            <li>表面的なノウハウに飽きた人</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>プラットフォーム</h4>
+          <ul>
+            <li>Twitter 週3-5ツイート</li>
+            <li>note 月2-3本（深掘りエッセイ）</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4 style="color: #888; margin-bottom: 10px;">コンテンツ4本柱</h4>
+      <div class="pillars">
+        <span class="pillar">問いかけ系<span class="pct">35%</span></span>
+        <span class="pillar">成長力学<span class="pct">30%</span></span>
+        <span class="pillar">世界観系<span class="pct">25%</span></span>
+        <span class="pillar">引用・紹介<span class="pct">10%</span></span>
+      </div>
+
+      <h4 style="color: #888; margin: 15px 0 10px;">トーン</h4>
+      <div class="tone-tags">
+        <span class="tone-tag">落ち着いた</span>
+        <span class="tone-tag">問いかけ型</span>
+        <span class="tone-tag">余白を残す</span>
+        <span class="tone-tag warn">× バズ狙い</span>
+        <span class="tone-tag warn">× 煽り</span>
+      </div>
+
+      <h4 style="color: #888; margin: 20px 0 10px;">KPI目標（6ヶ月）</h4>
+      <div class="kpi-row">
+        <div class="kpi-item"><div class="kpi-number">1,000</div><div class="kpi-label">フォロワー（質重視）</div></div>
+        <div class="kpi-item"><div class="kpi-number">3,000</div><div class="kpi-label">note月間PV</div></div>
+        <div class="kpi-item"><div class="kpi-number">100</div><div class="kpi-label">コアファン</div></div>
+      </div>
+    </div>
+
+    <!-- Brand 3: 技術経営者 -->
+    <div class="brand-card orange">
+      <div class="brand-header">
+        <div>
+          <h2 class="brand-title" style="color: #fb923c;">3. 技術経営者</h2>
+          <div class="brand-handle">@yuho_tech_ceo</div>
+        </div>
+        <span class="brand-phase">Phase 3</span>
+      </div>
+
+      <p style="color: #ccc; margin-bottom: 20px;">「技術と経営の両方がわかるAI専門家」</p>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>ターゲット</h4>
+          <ul>
+            <li>経営者 / CTO / 事業責任者</li>
+            <li>AI導入検討中の企業</li>
+            <li>DX推進担当者</li>
+            <li>信頼できる技術パートナーを探している人</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>プラットフォーム</h4>
+          <ul>
+            <li>Twitter 週2-3ツイート</li>
+            <li>note 月1-2本</li>
+            <li>LinkedIn 週1投稿</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4 style="color: #888; margin-bottom: 10px;">コンテンツ4本柱</h4>
+      <div class="pillars">
+        <span class="pillar">実績・事例<span class="pct">40%</span></span>
+        <span class="pillar">技術解説<span class="pct">25%</span></span>
+        <span class="pillar">経営×技術<span class="pct">25%</span></span>
+        <span class="pillar">登壇・メディア<span class="pct">10%</span></span>
+      </div>
+
+      <h4 style="color: #888; margin: 15px 0 10px;">トーン</h4>
+      <div class="tone-tags">
+        <span class="tone-tag">プロフェッショナル</span>
+        <span class="tone-tag">実績ベース</span>
+        <span class="tone-tag">データ重視</span>
+        <span class="tone-tag warn">× カジュアルすぎ</span>
+        <span class="tone-tag warn">× 自虐</span>
+      </div>
+
+      <h4 style="color: #888; margin: 20px 0 10px;">KPI目標（6ヶ月）</h4>
+      <div class="kpi-row">
+        <div class="kpi-item"><div class="kpi-number">3件</div><div class="kpi-label">月間問い合わせ</div></div>
+        <div class="kpi-item"><div class="kpi-number">1回</div><div class="kpi-label">月間登壇/取材</div></div>
+        <div class="kpi-item"><div class="kpi-number">500</div><div class="kpi-label">LinkedIn接続</div></div>
+      </div>
+    </div>
+
+    <!-- Brand 4: 学習理論専門家 -->
+    <div class="brand-card green">
+      <div class="brand-header">
+        <div>
+          <h2 class="brand-title" style="color: #4ade80;">4. 学習理論専門家</h2>
+          <div class="brand-handle">@yuho_learning</div>
+        </div>
+        <span class="brand-phase">Phase 3</span>
+      </div>
+
+      <p style="color: #ccc; margin-bottom: 20px;">「科学的な学習理論を実践で使えるレベルに落とし込む人」</p>
+
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>ターゲット</h4>
+          <ul>
+            <li>教育者 / 研修担当者</li>
+            <li>学習意欲の高い社会人</li>
+            <li>部下の成長に悩む人</li>
+            <li>科学的根拠のあるメソッドを求める人</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>プラットフォーム</h4>
+          <ul>
+            <li>Twitter 週3-5ツイート</li>
+            <li>note 週1本</li>
+            <li>YouTube（将来）月2本</li>
+          </ul>
+        </div>
+      </div>
+
+      <h4 style="color: #888; margin-bottom: 10px;">コンテンツ4本柱</h4>
+      <div class="pillars">
+        <span class="pillar">成長力学解説<span class="pct">35%</span></span>
+        <span class="pillar">実践ワーク<span class="pct">30%</span></span>
+        <span class="pillar">NLP/心理学<span class="pct">20%</span></span>
+        <span class="pillar">事例・成果<span class="pct">15%</span></span>
+      </div>
+
+      <h4 style="color: #888; margin: 15px 0 10px;">トーン</h4>
+      <div class="tone-tags">
+        <span class="tone-tag">先生っぽさ</span>
+        <span class="tone-tag">フレンドリー</span>
+        <span class="tone-tag">理論→実践</span>
+        <span class="tone-tag warn">× 権威的</span>
+        <span class="tone-tag warn">× 難解すぎ</span>
+      </div>
+
+      <h4 style="color: #888; margin: 20px 0 10px;">KPI目標（6ヶ月）</h4>
+      <div class="kpi-row">
+        <div class="kpi-item"><div class="kpi-number">2,000</div><div class="kpi-label">Twitterフォロワー</div></div>
+        <div class="kpi-item"><div class="kpi-number">5,000</div><div class="kpi-label">note月間PV</div></div>
+        <div class="kpi-item"><div class="kpi-number">5件</div><div class="kpi-label">月間講座申込</div></div>
+      </div>
+    </div>
+
+    <!-- 運用優先順位 -->
+    <div class="priority-section">
+      <h2>🎯 運用優先順位</h2>
+
+      <div class="phase-item">
+        <span class="brand-phase" style="background: #7c3aed;">Phase 1</span>
+        <div class="phase-content">
+          <h4>1-3ヶ月: 社会不適合×AI に全集中</h4>
+          <p>まずはメインブランドを確立。広く認知を取る。</p>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <span class="brand-phase" style="background: #0891b2;">Phase 2</span>
+        <div class="phase-content">
+          <h4>4-6ヶ月: 哲学者モード 開始</h4>
+          <p>コアファン向けの深いコンテンツ。質重視。</p>
+        </div>
+      </div>
+
+      <div class="phase-item">
+        <span class="brand-phase" style="background: #ea580c;">Phase 3</span>
+        <div class="phase-content">
+          <h4>7-12ヶ月: 技術経営 / 学習理論 開始</h4>
+          <p>事業連携を意識した専門ブランド展開。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 今すぐやること -->
+    <div class="card" style="margin-top: 30px;">
+      <h2>✅ 今すぐやること（Phase 1）</h2>
+      <div style="margin-top: 15px;">
+        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #333; cursor: pointer;">
+          <input type="checkbox" style="width: 18px; height: 18px;">
+          <span>Twitterアカウント作成/リニューアル</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #333; cursor: pointer;">
+          <input type="checkbox" style="width: 18px; height: 18px;">
+          <span>プロフィール設計</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #333; cursor: pointer;">
+          <input type="checkbox" style="width: 18px; height: 18px;">
+          <span>固定ツイート作成</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #333; cursor: pointer;">
+          <input type="checkbox" style="width: 18px; height: 18px;">
+          <span>最初の10ツイート下書き</span>
+        </label>
+        <label style="display: flex; align-items: center; gap: 10px; padding: 10px 0; cursor: pointer;">
+          <input type="checkbox" style="width: 18px; height: 18px;">
+          <span>noteマガジン作成</span>
+        </label>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
