@@ -1,0 +1,81 @@
+<%- include('layout', { body: `
+
+<div style="margin-bottom: 20px;">
+  <a href="/articles" style="color: #888;">← 記事一覧に戻る</a>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h1 style="font-size: 1.5rem;">${article.title}</h1>
+    <a href="/articles/${article.id}/edit" class="btn btn-primary">編集</a>
+  </div>
+
+  <table>
+    <tr>
+      <th style="width: 150px;">ステータス</th>
+      <td><span class="badge badge-${article.status}">${article.status}</span></td>
+    </tr>
+    <tr>
+      <th>ブランディング</th>
+      <td>${article.branding_type ? `<span class="badge badge-${article.branding_type}">${article.branding_type}</span>` : '-'}</td>
+    </tr>
+    <tr>
+      <th>カテゴリ</th>
+      <td>${article.category || '-'}</td>
+    </tr>
+    <tr>
+      <th>優先度</th>
+      <td>${article.priority}</td>
+    </tr>
+    <tr>
+      <th>ファイルパス</th>
+      <td>${article.file_path || '-'}</td>
+    </tr>
+    <tr>
+      <th>note.com URL</th>
+      <td>${article.note_url ? `<a href="${article.note_url}" target="_blank">${article.note_url}</a>` : '-'}</td>
+    </tr>
+    <tr>
+      <th>作成日</th>
+      <td>${article.created_at || '-'}</td>
+    </tr>
+    <tr>
+      <th>更新日</th>
+      <td>${article.updated_at || '-'}</td>
+    </tr>
+    <tr>
+      <th>公開日</th>
+      <td>${article.published_at || '-'}</td>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>クイックアクション</h2>
+  <div class="actions" style="margin-top: 15px;">
+    ${article.status === 'idea' ? `
+      <button class="btn btn-primary" onclick="updateStatus('drafting')">執筆開始</button>
+    ` : ''}
+    ${article.status === 'drafting' ? `
+      <button class="btn btn-primary" onclick="updateStatus('review')">レビューへ</button>
+    ` : ''}
+    ${article.status === 'review' ? `
+      <button class="btn btn-primary" onclick="updateStatus('published')">公開済みにする</button>
+    ` : ''}
+    ${article.file_path ? `
+      <a href="/articles/${article.id}/edit" class="btn btn-secondary">ファイルを開く</a>
+    ` : ''}
+  </div>
+</div>
+
+<script>
+function updateStatus(status) {
+  fetch('/api/articles/${article.id}/status', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status })
+  }).then(() => location.reload());
+}
+</script>
+
+` }) %>

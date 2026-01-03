@@ -1,0 +1,55 @@
+<%- include('layout', { body: `
+
+<div class="card-header">
+  <h1>記事管理</h1>
+  <a href="/articles/new" class="btn btn-primary">+ 新規記事</a>
+</div>
+
+<div class="card" style="margin-bottom: 20px;">
+  <form method="GET" action="/articles" style="display: flex; gap: 15px; align-items: center;">
+    <select name="status" style="padding: 8px; background: #0f0f0f; border: 1px solid #333; color: #fff; border-radius: 4px;">
+      <option value="">全ステータス</option>
+      <option value="idea" ${filters.status === 'idea' ? 'selected' : ''}>アイデア</option>
+      <option value="drafting" ${filters.status === 'drafting' ? 'selected' : ''}>執筆中</option>
+      <option value="review" ${filters.status === 'review' ? 'selected' : ''}>レビュー</option>
+      <option value="published" ${filters.status === 'published' ? 'selected' : ''}>公開済み</option>
+    </select>
+    <select name="branding_type" style="padding: 8px; background: #0f0f0f; border: 1px solid #333; color: #fff; border-radius: 4px;">
+      <option value="">全ブランディング</option>
+      ${branding.map(b => `
+        <option value="${b.code}" ${filters.branding_type === b.code ? 'selected' : ''}>${b.name}</option>
+      `).join('')}
+    </select>
+    <button type="submit" class="btn btn-secondary">絞り込み</button>
+    <a href="/articles" style="color: #888;">リセット</a>
+  </form>
+</div>
+
+<div class="card">
+  ${articles.length ? `
+    <table>
+      <tr>
+        <th style="width: 40%">タイトル</th>
+        <th>ブランディング</th>
+        <th>カテゴリ</th>
+        <th>ステータス</th>
+        <th>更新日</th>
+        <th></th>
+      </tr>
+      ${articles.map(a => `
+        <tr>
+          <td><a href="/articles/${a.id}">${a.title.substring(0, 50)}${a.title.length > 50 ? '...' : ''}</a></td>
+          <td><span class="badge badge-${a.branding_type || 'none'}">${a.branding_type || '-'}</span></td>
+          <td>${a.category || '-'}</td>
+          <td><span class="badge badge-${a.status}">${a.status}</span></td>
+          <td style="color: #666; font-size: 0.85rem;">${a.updated_at ? a.updated_at.substring(0, 10) : '-'}</td>
+          <td>
+            <a href="/articles/${a.id}/edit" class="btn btn-secondary btn-sm">編集</a>
+          </td>
+        </tr>
+      `).join('')}
+    </table>
+  ` : '<p class="empty">記事がありません</p>'}
+</div>
+
+` }) %>

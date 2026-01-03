@@ -1,0 +1,64 @@
+<%- include('layout', { body: `
+
+<h1>ダッシュボード</h1>
+
+<div class="grid grid-4">
+  <div class="card stat-card">
+    <div class="stat-number">${stats.total}</div>
+    <div class="stat-label">総記事数</div>
+  </div>
+  ${stats.byStatus.map(s => `
+    <div class="card stat-card">
+      <div class="stat-number">${s.count}</div>
+      <div class="stat-label">${s.status === 'idea' ? 'アイデア' : s.status === 'drafting' ? '執筆中' : s.status === 'review' ? 'レビュー' : '公開済み'}</div>
+    </div>
+  `).join('')}
+</div>
+
+<div class="grid grid-2">
+  <div class="card">
+    <div class="card-header">
+      <h2>ブランディング別</h2>
+    </div>
+    <table>
+      <tr><th>タイプ</th><th>記事数</th></tr>
+      ${stats.byBranding.map(b => `
+        <tr>
+          <td><span class="badge badge-${b.branding_type || 'none'}">${b.branding_type || '未分類'}</span></td>
+          <td>${b.count}</td>
+        </tr>
+      `).join('')}
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>最近の更新</h2>
+      <a href="/articles" class="btn btn-secondary btn-sm">すべて見る</a>
+    </div>
+    ${recentArticles.length ? `
+      <table>
+        <tr><th>タイトル</th><th>ステータス</th></tr>
+        ${recentArticles.map(a => `
+          <tr>
+            <td><a href="/articles/${a.id}">${a.title.substring(0, 40)}${a.title.length > 40 ? '...' : ''}</a></td>
+            <td><span class="badge badge-${a.status}">${a.status}</span></td>
+          </tr>
+        `).join('')}
+      </table>
+    ` : '<p class="empty">記事がありません</p>'}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>クイックアクション</h2>
+  </div>
+  <div class="actions">
+    <a href="/articles/new" class="btn btn-primary">+ 新規記事</a>
+    <a href="/articles?status=drafting" class="btn btn-secondary">執筆中を見る</a>
+    <a href="/articles?status=idea" class="btn btn-secondary">アイデア一覧</a>
+  </div>
+</div>
+
+` }) %>
