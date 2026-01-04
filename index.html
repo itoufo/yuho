@@ -288,22 +288,22 @@
       const modal = document.createElement('div');
       modal.className = 'modal';
       modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;';
-      modal.innerHTML = \`
+      modal.innerHTML = `
         <div style="background:white;border-radius:12px;max-width:500px;width:90%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
           <div style="padding:16px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;">
             <h3 style="margin:0;">X投稿テキスト</h3>
             <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#fff;">&times;</button>
           </div>
           <div style="padding:24px;overflow-y:auto;flex:1;">
-            <pre style="white-space:pre-wrap;font-family:inherit;margin:0 0 16px 0;background:#f8f9fa;padding:16px;border-radius:8px;">\${draft.xPost}</pre>
+            <pre style="white-space:pre-wrap;font-family:inherit;margin:0 0 16px 0;background:#f8f9fa;padding:16px;border-radius:8px;">${draft.xPost}</pre>
             <div style="display:flex;gap:8px;">
-              <button class="btn btn-primary" style="background:#000;" onclick="copyToClipboard(getDraftById('\${id}').xPost, this)">コピー</button>
-              <a href="https://twitter.com/intent/tweet?text=\${encodeURIComponent(draft.xPost)}" target="_blank" class="btn btn-secondary">Xで投稿</a>
+              <button class="btn btn-primary" style="background:#000;" onclick="copyToClipboard(getDraftById('${id}').xPost, this)">コピー</button>
+              <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(draft.xPost)}" target="_blank" class="btn btn-secondary">Xで投稿</a>
             </div>
-            <p style="color:#6b7280;font-size:0.85rem;margin-top:16px;">\${draft.xPost.length}/280文字</p>
+            <p style="color:#6b7280;font-size:0.85rem;margin-top:16px;">${draft.xPost.length}/280文字</p>
           </div>
         </div>
-      \`;
+      `;
       document.body.appendChild(modal);
       modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
     }
