@@ -344,6 +344,127 @@ Message 4: Write "file.js"
 
 Remember: **Claude Flow coordinates, Claude Code creates!**
 
+---
+
+## 📝 note.com 記事作成ワークフロー
+
+### ディレクトリ構成
+記事ごとに専用ディレクトリを作成：
+```
+docs/drafts/
+└── {article-slug}/
+    ├── article.md      # 記事本文（Markdown）
+    ├── thumbnail.jpg   # アイキャッチ画像（16:9推奨）
+    └── images/         # 本文挿入画像
+        ├── 01-intro.jpg
+        ├── 02-chart.jpg
+        └── ...
+```
+
+### 記事作成手順
+
+1. **ディレクトリ作成**
+   ```bash
+   mkdir -p docs/drafts/{article-slug}
+   ```
+
+2. **記事本文作成** (`article.md`)
+   - 1行目: `# タイトル`
+   - 2行目: `tags: タグ1, タグ2, タグ3`
+   - 3行目以降: 本文
+   - 末尾: 著者プロフィール
+
+3. **アイキャッチ画像生成**
+   ```javascript
+   mcp__nanobanana__nanobanana_generate({
+     prompt: "記事内容に合った画像の説明",
+     aspect_ratio: "16:9",
+     style: "digital_art",  // photorealistic, digital_art, cartoon, anime, sketch, vintage
+     quality: "high"
+   })
+   ```
+   生成後、`thumbnail.jpg`として保存
+
+4. **本文挿入画像生成**（必要に応じて）
+   ```bash
+   mkdir -p docs/drafts/{article-slug}/images
+   ```
+   各セクションに合わせた画像を生成：
+   - 図解・チャート: `digital_art` スタイル推奨
+   - 概念図: `cartoon` または `digital_art`
+   - リアルなイメージ: `photorealistic`
+
+   生成後、`images/01-section-name.jpg` 形式で保存
+
+   記事内での参照:
+   ```markdown
+   ![図1: 説明](images/01-chart.jpg)
+   ```
+
+   **⚠️ 注意**: note.comはMarkdownの画像参照に非対応。
+   `![...]` の部分は、note.com編集画面で**手作業で画像をアップロード・挿入**する必要あり。
+   Markdownの画像記法は「ここに画像を入れる」という目印として使用。
+
+5. **note.com投稿**
+   - `mcp__Note__save_draft` で下書き保存
+   - `mcp__Note__publish_note` で公開
+
+### note.com フォーマット制約
+
+**⚠️ note.comの制約:**
+- テーブル（表）: **非対応** → 画像化必須
+- 複雑な箇条書き: 表示崩れやすい → シンプルに or 画像化
+- コードブロック: 対応だがハイライトなし
+- 水平線: `---` は使用可能
+
+**画像化すべきコンテンツ:**
+- 比較表・チャート
+- フローチャート・判断基準
+- 複雑なリスト
+- 数値データの一覧
+
+**画像生成時のコツ:**
+```javascript
+// テーブル・チャート用
+mcp__nanobanana__nanobanana_generate({
+  prompt: "Japanese infographic chart showing [内容]. Clean professional design, white background, readable text.",
+  aspect_ratio: "16:9",
+  style: "digital_art",
+  quality: "high"
+})
+```
+
+### Markdownフォーマット
+```markdown
+# タイトル
+
+tags: タグ1, タグ2, タグ3
+
+導入文...
+
+---
+
+## 見出し1
+
+本文...
+
+![図1: チャート説明](images/01-chart.jpg)
+
+---
+
+## 著者プロフィール
+
+**伊東雄歩（いとうゆうほ）**
+...
+```
+
+### 記事提案との連携
+- Supabase `yuho_article_suggestions` テーブルから記事案を取得
+- 執筆開始時は status を `writing` に更新
+- 公開後は status を `completed` に更新
+
+---
+
 # important-instruction-reminders
 Do what has been asked; nothing more, nothing less.
 NEVER create files unless they're absolutely necessary for achieving your goal.
