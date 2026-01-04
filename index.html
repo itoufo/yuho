@@ -76,6 +76,16 @@
       </div>
     </div>
 
+    <div class="card" id="suggestions-section">
+      <div class="card-header">
+        <h2>📝 書くべき記事（優先順位順）</h2>
+        <button class="btn btn-secondary btn-sm" onclick="loadSuggestions()">更新</button>
+      </div>
+      <div id="suggestions-list">
+        <p class="empty">読み込み中...</p>
+      </div>
+    </div>
+
     <div class="card" id="drafts-section">
       <div class="card-header">
         <h2>note.com 投稿用下書き</h2>
@@ -128,7 +138,74 @@
 
       // 下書き表示
       renderDrafts();
+
+      // 記事提案を読み込み
+      loadSuggestions();
     });
+
+    async function loadSuggestions() {
+      const container = document.getElementById('suggestions-list');
+      container.innerHTML = '<p class="empty">読み込み中...</p>';
+
+      const { data, error } = await supabaseClient
+        .from('yuho_article_suggestions')
+        .select('*')
+        .neq('status', 'completed')
+        .neq('status', 'skipped')
+        .order('priority', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        container.innerHTML = '<p class="empty">エラー: ' + error.message + '</p>';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<p class="empty">提案がありません</p>';
+        return;
+      }
+
+      container.innerHTML = data.map(s => `
+        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span style="background:${s.priority >= 90 ? '#ef4444' : s.priority >= 80 ? '#f97316' : s.priority >= 70 ? '#eab308' : '#22c55e'};color:white;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;">
+                  ${s.priority}
+                </span>
+                <span class="badge badge-${s.branding_type}">${s.branding_type}</span>
+                <span class="badge" style="background:#f1f5f9;color:#64748b;">${s.category}</span>
+                ${s.impact === 'high' ? '<span style="color:#ef4444;font-size:0.8rem;">🔥 高インパクト</span>' : ''}
+              </div>
+              <h4 style="margin:0 0 8px 0;font-size:1rem;">${s.title}</h4>
+              <p style="margin:0 0 8px 0;color:#6b7280;font-size:0.9rem;">${s.description}</p>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                ${(s.tags || []).map(t => `<span style="background:#e2e8f0;color:#475569;padding:2px 6px;border-radius:4px;font-size:0.75rem;">${t}</span>`).join('')}
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <button class="btn btn-sm btn-primary" onclick="updateSuggestionStatus(${s.id}, 'writing')">執筆開始</button>
+              <button class="btn btn-sm btn-secondary" onclick="updateSuggestionStatus(${s.id}, 'skipped')">スキップ</button>
+            </div>
+          </div>
+          ${s.notes ? `<p style="margin:8px 0 0;padding:8px;background:#f8fafc;border-radius:4px;font-size:0.85rem;color:#64748b;">💡 ${s.notes}</p>` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function updateSuggestionStatus(id, status) {
+      const { error } = await supabaseClient
+        .from('yuho_article_suggestions')
+        .update({ status: status })
+        .eq('id', id);
+
+      if (error) {
+        alert('更新エラー: ' + error.message);
+        return;
+      }
+
+      loadSuggestions();
+    }
 
     function renderDrafts() {
       const drafts = getDrafts();

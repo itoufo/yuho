@@ -1,0 +1,167 @@
+-- 記事提案テーブル（書くべき記事の優先順位管理）
+-- 実用価値重視の記事提案データ
+
+CREATE TABLE IF NOT EXISTS yuho_article_suggestions (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    branding_type TEXT NOT NULL CHECK (branding_type IN ('social_misfit_ai', 'philosopher', 'tech_ceo', 'learning_theory')),
+    category TEXT CHECK (category IN ('story', 'failure', 'adhd', 'ai', 'philosophy', 'business', 'learning', 'timely')),
+    priority INTEGER DEFAULT 50 CHECK (priority >= 0 AND priority <= 100),
+    impact TEXT CHECK (impact IN ('high', 'medium', 'low')),
+    effort TEXT CHECK (effort IN ('high', 'medium', 'low')),
+    status TEXT DEFAULT 'suggested' CHECK (status IN ('suggested', 'approved', 'writing', 'completed', 'skipped')),
+    related_draft_id TEXT,
+    related_article_id INTEGER,
+    tags TEXT[] DEFAULT '{}',
+    notes TEXT,
+    source TEXT DEFAULT 'ai_analysis',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- インデックス
+CREATE INDEX IF NOT EXISTS idx_suggestions_priority ON yuho_article_suggestions(priority DESC);
+CREATE INDEX IF NOT EXISTS idx_suggestions_status ON yuho_article_suggestions(status);
+CREATE INDEX IF NOT EXISTS idx_suggestions_branding ON yuho_article_suggestions(branding_type);
+
+-- RLSポリシー（全アクセス許可）
+ALTER TABLE yuho_article_suggestions ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public read suggestions') THEN
+        CREATE POLICY "Public read suggestions" ON yuho_article_suggestions FOR SELECT USING (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public insert suggestions') THEN
+        CREATE POLICY "Public insert suggestions" ON yuho_article_suggestions FOR INSERT WITH CHECK (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public update suggestions') THEN
+        CREATE POLICY "Public update suggestions" ON yuho_article_suggestions FOR UPDATE USING (true);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Public delete suggestions') THEN
+        CREATE POLICY "Public delete suggestions" ON yuho_article_suggestions FOR DELETE USING (true);
+    END IF;
+END $$;
+
+-- updated_at自動更新トリガー
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+DROP TRIGGER IF EXISTS update_yuho_suggestions_updated_at ON yuho_article_suggestions;
+CREATE TRIGGER update_yuho_suggestions_updated_at
+    BEFORE UPDATE ON yuho_article_suggestions
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- コメント
+COMMENT ON TABLE yuho_article_suggestions IS 'AI分析による記事提案・優先順位管理';
+COMMENT ON COLUMN yuho_article_suggestions.priority IS '優先度 0-100（100が最高）';
+COMMENT ON COLUMN yuho_article_suggestions.impact IS 'インパクト: high=差別化大, medium=安定, low=ニッチ';
+COMMENT ON COLUMN yuho_article_suggestions.effort IS '執筆労力: high=リサーチ必要, medium=通常, low=すぐ書ける';
+
+-- 既存データをクリア（あれば）
+DELETE FROM yuho_article_suggestions;
+
+-- 実用価値重視の記事データを挿入
+INSERT INTO yuho_article_suggestions (title, description, branding_type, category, priority, impact, effort, tags, notes) VALUES
+
+-- カテゴリ1: ADHD×仕事術（実践ノウハウ）
+('ADHDでもタスクを忘れない「1箇所記録術」——10年経営者の実践法',
+'タスク管理アプリを何度も挫折した人へ。僕が10年間使い続けている「すべてを1箇所に書く」シンプルな方法を具体的に解説。',
+'social_misfit_ai', 'adhd', 100, 'high', 'low',
+ARRAY['ADHD', 'タスク管理', '仕事術', '実践'],
+'検索需要高。紙1枚仕事術が人気。具体的How-to'),
+
+('ADHDの「過集中」を武器にする5つのルール',
+'6時間ぶっ通しで作業→3日間何もできない。この特性をコントロールして武器にする具体的なルールを解説。',
+'social_misfit_ai', 'adhd', 95, 'high', 'medium',
+ARRAY['ADHD', '過集中', '生産性', 'ルール'],
+'ADHDあるある共感→具体的解決策の構成'),
+
+('敬語が苦手な人のための「テンプレート集」——コピペで使えるビジネスメール',
+'敬語が使えなくて怒られ続けた僕が作った、コピペで使えるビジネスメールテンプレート集。シーン別に50パターン。',
+'social_misfit_ai', 'adhd', 90, 'high', 'medium',
+ARRAY['敬語', 'ビジネスメール', 'テンプレート', 'コピペ'],
+'実用価値MAX。ブックマークされやすい'),
+
+('遅刻癖を治さずに「信頼を失わない」方法',
+'遅刻癖は治らない。でも信頼を失わない方法はある。僕が10年間実践してきた「遅刻しても許される人」になるための具体的戦略。',
+'social_misfit_ai', 'adhd', 85, 'high', 'low',
+ARRAY['遅刻', 'ADHD', '信頼', '仕事術'],
+'逆説的アプローチで差別化'),
+
+-- カテゴリ2: AI活用術（初心者向けHow-to）
+('【保存版】ChatGPTで仕事を3倍速にする「プロンプト50選」',
+'メール作成、議事録要約、企画書作成…仕事で使えるプロンプトを50個厳選。コピペですぐ使える。',
+'social_misfit_ai', 'ai', 98, 'high', 'high',
+ARRAY['ChatGPT', 'プロンプト', '仕事効率化', '保存版'],
+'保存版系は需要大。労力はかかるが長期資産'),
+
+('AIで「文章力」を上げる——添削してもらうコツと実例',
+'AIに文章を添削してもらうと驚くほど上達する。効果的な添削プロンプトと、Before/Afterの実例を紹介。',
+'social_misfit_ai', 'ai', 88, 'medium', 'medium',
+ARRAY['AI', '文章力', '添削', 'ライティング'],
+'スキルアップ系。実例があると説得力UP'),
+
+('社会人1年目に教えたい「AIの使い方」入門',
+'新社会人向け。AIを「ズルい道具」ではなく「最強の師匠」として使う考え方と具体的な活用法。',
+'social_misfit_ai', 'ai', 82, 'medium', 'medium',
+ARRAY['AI', '新社会人', '入門', '仕事術'],
+'4月に需要増。ターゲット明確'),
+
+-- カテゴリ3: 学習理論（成長力学の実践版）
+('「3日坊主」を卒業する——脳科学に基づく習慣化の5ステップ',
+'なぜ続かないのか。脳科学と心理学に基づいた習慣化の5ステップを、1000万円投資して学んだ知見から解説。',
+'learning_theory', 'learning', 92, 'high', 'medium',
+ARRAY['習慣化', '脳科学', '継続', '3日坊主'],
+'成長力学を噛み砕いて実用化'),
+
+('記憶力が悪い人のための「忘れない」勉強法',
+'記憶力は変えられない。でも「忘れにくい」学び方はある。ニューラルテスト理論を応用した勉強法を解説。',
+'learning_theory', 'learning', 87, 'medium', 'medium',
+ARRAY['記憶力', '勉強法', '学習', '忘れない'],
+'StoQ開発の知見を実用記事に'),
+
+('「わかったつもり」を防ぐ——本当に身につく学習法',
+'インプットだけでは知識は使えない。点→線→体積の成長モデルに基づいた「使える知識」の作り方。',
+'learning_theory', 'learning', 80, 'medium', 'medium',
+ARRAY['学習法', 'アウトプット', '成長力学'],
+'成長力学を一般向けに翻訳'),
+
+-- カテゴリ4: 起業・キャリア（実践ノウハウ）
+('フリーランスvs法人化——年収別の判断基準チャート',
+'いつ法人化すべき？年収500万/700万/1000万それぞれのケースで、税金・リスク・信用を比較した判断チャート。',
+'tech_ceo', 'business', 93, 'high', 'medium',
+ARRAY['フリーランス', '法人化', '年収', '判断基準'],
+'検索需要高。図解があると強い'),
+
+('150人月プロジェクトを生き延びた「PMの教科書」',
+'大規模プロジェクトで何度も修羅場を経験した僕が、PMとして生き残るために必要な具体的スキルをまとめた。',
+'tech_ceo', 'business', 78, 'medium', 'high',
+ARRAY['PM', 'プロジェクト管理', '大規模開発'],
+'技術経営者ブランド向け。BtoB信頼構築'),
+
+('オフショア開発で失敗しないための「事前チェックリスト」',
+'ブリッジSEが失踪した経験から学んだ、オフショア開発を始める前に確認すべき20のポイント。',
+'tech_ceo', 'business', 75, 'medium', 'medium',
+ARRAY['オフショア', '開発', 'チェックリスト', '失敗しない'],
+'失敗談→実用ノウハウに昇華'),
+
+-- カテゴリ5: マインドセット（読み物として価値）
+('「普通」ができない人が生き残る3つの戦略',
+'社会不適合でも生き残れる。会社員に向いてない人が選ぶべき働き方を、10年の経験から3パターンに整理。',
+'social_misfit_ai', 'story', 86, 'high', 'low',
+ARRAY['社会不適合', '働き方', '生存戦略'],
+'共感→具体的選択肢を提示'),
+
+('「失敗しても死なない」を証明した10年間',
+'訴訟、2000万損失、役員の裏切り。それでも死ななかった。失敗からの立ち直り方を5ステップで解説。',
+'social_misfit_ai', 'story', 70, 'medium', 'low',
+ARRAY['失敗', '復活', 'レジリエンス'],
+'ストーリーだが「立ち直り方」という実用を含む');

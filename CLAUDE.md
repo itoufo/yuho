@@ -1,280 +1,352 @@
-# CLAUDE.md - プロジェクトコンテキスト
+# Claude Code Configuration - SPARC Development Environment
 
-このファイルはClaude Codeが会話を引き継ぐためのコンテキストファイルです。
+## 🚨 CRITICAL: CONCURRENT EXECUTION & FILE MANAGEMENT
 
----
+**ABSOLUTE RULES**:
+1. ALL operations MUST be concurrent/parallel in a single message
+2. **NEVER save working files, text/mds and tests to the root folder**
+3. ALWAYS organize files in appropriate subdirectories
+4. **USE CLAUDE CODE'S TASK TOOL** for spawning agents concurrently, not just MCP
 
-## プロジェクト概要
+### ⚡ GOLDEN RULE: "1 MESSAGE = ALL RELATED OPERATIONS"
 
-**伊東雄歩（Yuho Ito）のコンテンツ管理ダッシュボード**
+**MANDATORY PATTERNS:**
+- **TodoWrite**: ALWAYS batch ALL todos in ONE call (5-10+ todos minimum)
+- **Task tool (Claude Code)**: ALWAYS spawn ALL agents in ONE message with full instructions
+- **File operations**: ALWAYS batch ALL reads/writes/edits in ONE message
+- **Bash commands**: ALWAYS batch ALL terminal operations in ONE message
+- **Memory operations**: ALWAYS batch ALL memory store/retrieve in ONE message
 
-note.comへの投稿を管理するためのダッシュボード。プロフィール、ブランディング戦略、記事アイデア、下書きを一元管理する。
+### 🎯 CRITICAL: Claude Code Task Tool for Agent Execution
 
----
-
-## 人物: 伊東雄歩
-
-### 基本情報
-- **名前**: 伊東雄歩（いとうゆうほ / ゆぽゆぽ）
-- **生年**: 1990年
-- **出身**: 神奈川県横須賀市
-- **学歴**: 横須賀高校 → 東北大学
-- **肩書**: 株式会社ウォーカー代表取締役
-- **資格**: MENSA会員、NLPマスタープラクティショナー
-- **ブランディング**: 「令和のエジソン」
-
-### 特徴
-- IQ130超
-- ADHD気質（敬語苦手、遅刻癖、忘れ物癖）
-- 訴訟5回（4勝1分）
-- 最大損失2000万円を経験
-- 独自理論「成長力学」を開発
-
-### キャリア
-- 2013: ソフトバンク入社（PNet PMO、WAF技術主任）
-- 2015: 株式会社ウォーカー設立（フリーランス経験なしで直接法人化）
-- 2016: AI教材「StoQ」開発、Edix出展
-- 2017: JDLA認定講座講師
-- 2019-2021: アパレル大規模基幹システム（150人月超）
-- 2024: 経営者同士で結婚
-- 現在: 健全AI教育協会（HAIIA）理事、Digitech Quest全国展開中
-
-### 哲学・思想
-- **夢**: 「世界征服」= 世界の常識を変え、新しい価値観を提示すること
-- **座右の銘**: 「失敗は経験の元」
-- **名前の意味**: 「雄歩」= 英雄然として歩む
-
----
-
-## 成長力学（独自理論）
-
-### 情報処理モデル
-```
-心（Emotion）→ 脳（Processing）→ 記憶（Memory）
-```
-好奇心が湧いた情報ほど深く記憶される。
-
-### 3つの最適化軸
-1. **効率**: 必要な情報を即座に引き出せる状態
-2. **尊厳**: 自己評価を高める情報は優先保存
-3. **目標達成**: ゴール直結情報は優先順位が高い
-
-### 点→線→体積モデル
-- **点**: 孤立した知識の断片
-- **線**: 点同士を結ぶ関係性
-- **体積**: 創造的アイデアが生まれる状態
-
-### アイデアの公式
-```
-アイデア = 既存の知識（体積化） + リラックス状態
+**Claude Code's Task tool is the PRIMARY way to spawn agents:**
+```javascript
+// ✅ CORRECT: Use Claude Code's Task tool for parallel agent execution
+[Single Message]:
+  Task("Research agent", "Analyze requirements and patterns...", "researcher")
+  Task("Coder agent", "Implement core features...", "coder")
+  Task("Tester agent", "Create comprehensive tests...", "tester")
+  Task("Reviewer agent", "Review code quality...", "reviewer")
+  Task("Architect agent", "Design system architecture...", "system-architect")
 ```
 
----
+**MCP tools are ONLY for coordination setup:**
+- `mcp__claude-flow__swarm_init` - Initialize coordination topology
+- `mcp__claude-flow__agent_spawn` - Define agent types for coordination
+- `mcp__claude-flow__task_orchestrate` - Orchestrate high-level workflows
 
-## ブランディング戦略（4軸）
+### 📁 File Organization Rules
 
-### 1. 社会不適合×AI（メイン）
-- **ハンドル**: @yuho_misfit
-- **コンセプト**: 社会不適合がAIで人生を変える方法を教える人
-- **ターゲット**: 社会に馴染めない人、ADHD、HSP
-- **トーン**: カジュアル、共感、実体験ベース
-- **Phase**: 1（今すぐ開始）
+**NEVER save to root folder. Use these directories:**
+- `/src` - Source code files
+- `/tests` - Test files
+- `/docs` - Documentation and markdown files
+- `/config` - Configuration files
+- `/scripts` - Utility scripts
+- `/examples` - Example code
 
-### 2. 哲学者モード（サブ）
-- **ハンドル**: @yuho_think
-- **コンセプト**: 常識への疑問、世界の見方、成長力学
-- **ターゲット**: 思考好き、上級者
-- **トーン**: 深い、問いかけ、こびない
-- **注意**: バズらせない、数より深さ
-- **Phase**: 2（4-6ヶ月後）
+## Project Overview
 
-### 3. 技術経営者（専門）
-- **ハンドル**: @yuho_tech_ceo
-- **コンセプト**: AI×ビジネス×技術の専門家
-- **ターゲット**: BtoB、経営者、技術者
-- **トーン**: プロフェッショナル
-- **Phase**: 3（7-12ヶ月後）
+This project uses SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) methodology with Claude-Flow orchestration for systematic Test-Driven Development.
 
-### 4. 学習理論専門家（専門）
-- **ハンドル**: @yuho_learning
-- **コンセプト**: 成長力学、NLP、教育メソッド
-- **ターゲット**: 教育関係者、学習者
-- **トーン**: アカデミック、実践的
-- **Phase**: 3（7-12ヶ月後）
+## SPARC Commands
 
----
+### Core Commands
+- `npx claude-flow sparc modes` - List available modes
+- `npx claude-flow sparc run <mode> "<task>"` - Execute specific mode
+- `npx claude-flow sparc tdd "<feature>"` - Run complete TDD workflow
+- `npx claude-flow sparc info <mode>` - Get mode details
 
-## 技術スタック
+### Batchtools Commands
+- `npx claude-flow sparc batch <modes> "<task>"` - Parallel execution
+- `npx claude-flow sparc pipeline "<task>"` - Full pipeline processing
+- `npx claude-flow sparc concurrent <mode> "<tasks-file>"` - Multi-task processing
 
-### ダッシュボード
-- **フロントエンド**: 静的HTML + Vanilla JS
-- **バックエンド**: Supabase（PostgreSQL + REST API）
-- **ホスティング**: Netlify
-- **画像生成**: nanobanana MCP
+### Build Commands
+- `npm run build` - Build project
+- `npm run test` - Run tests
+- `npm run lint` - Linting
+- `npm run typecheck` - Type checking
 
-### Supabase設定
-- **URL**: https://bjnyvjtilklrfbnnnybi.supabase.co
-- **テーブル接頭辞**: `yuho_`
+## SPARC Workflow Phases
 
-### テーブル構造
-```sql
--- コンテンツ管理
-yuho_articles (id, title, branding_type, category, status, file_path, priority, created_at, updated_at)
-yuho_branding (id, code, name, concept, target, tone)
-yuho_tags (id, name)
-yuho_article_tags (article_id, tag_id)
+1. **Specification** - Requirements analysis (`sparc run spec-pseudocode`)
+2. **Pseudocode** - Algorithm design (`sparc run spec-pseudocode`)
+3. **Architecture** - System design (`sparc run architect`)
+4. **Refinement** - TDD implementation (`sparc tdd`)
+5. **Completion** - Integration (`sparc run integration`)
 
--- マルチプラットフォーム管理
-yuho_platforms (id, code, name, description, content_type, typical_length)
-yuho_article_platforms (id, article_id, platform_id, status, url, scheduled_at, published_at, notes)
-```
+## Code Style & Best Practices
 
-### プラットフォーム
-| code | name | content_type |
-|------|------|--------------|
-| note | note | 長文記事 |
-| x | X (Twitter) | ショートテキスト |
-| youtube | YouTube | 動画 |
-| voicy | Voicy | 音声 |
+- **Modular Design**: Files under 500 lines
+- **Environment Safety**: Never hardcode secrets
+- **Test-First**: Write tests before implementation
+- **Clean Architecture**: Separate concerns
+- **Documentation**: Keep updated
 
-### プラットフォーム別ステータス
-- `planned`: 予定
-- `drafting`: 準備中
-- `scheduled`: 公開予約済み
-- `published`: 公開済み
-- `skipped`: スキップ
+## 🚀 Available Agents (54 Total)
 
-### ステータス
-- `idea`: アイデア
-- `drafting`: 執筆中
-- `review`: レビュー
-- `published`: 公開済み
+### Core Development
+`coder`, `reviewer`, `tester`, `planner`, `researcher`
 
----
+### Swarm Coordination
+`hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
 
-## ファイル構成
+### Consensus & Distributed
+`byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
 
-```
-yuho/
-├── index.html          # ダッシュボード（統計・概要）
-├── articles.html       # 記事管理（CRUD）
-├── branding.html       # ブランディング一覧
-├── account-design.html # アカウント設計（4ブランド詳細）
-├── profile.html        # プロフィール（詳細な経歴）
-├── css/style.css       # 共通スタイル
-├── js/
-│   ├── config.js       # Supabase設定
-│   └── app.js          # 共通ユーティリティ
-├── img/
-│   └── brand-structure.jpg  # ブランド構造図（nanobanana生成）
-├── sql/                # SQLスクリプト
-├── scripts/            # 自動化スクリプト
-├── docs/               # ドキュメント類
-│   ├── profile.md      # プロフィール詳細（マスターデータ）
-│   ├── branding.md     # ブランディング戦略詳細
-│   ├── ideas/          # 記事アイデア一覧
-│   ├── drafts/         # 下書き記事
-│   └── outputs/        # 出力ファイル
-├── netlify.toml        # Netlify設定
-├── account-design.md   # アカウント設計書（詳細）
-├── CLAUDE.md           # このファイル
-└── README.md           # プロジェクト概要
-```
+### Performance & Optimization
+`perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
 
-## データ管理方針
-- **全データはSupabaseに集約**（ローカルDBは使用しない）
-- マルチプラットフォーム対応（note, X, YouTube, Voicy）
-- 各プラットフォームごとに個別のステータス管理が可能
+### GitHub & Repository
+`github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
 
----
+### SPARC Methodology
+`sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
 
-## 記事データ概要
+### Specialized Development
+`backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
 
-- **総記事数**: 61件
-- **social_misfit_ai**: 24件
-- **philosopher**: 37件
-- **drafting状態**: 1件（my-story-failures.md）
+### Testing & Validation
+`tdd-london-swarm`, `production-validator`
 
----
+### Migration & Planning
+`migration-planner`, `swarm-init`
 
-## 今後の作業予定
+## 🎯 Claude Code vs MCP Tools
 
-### Phase 1（今すぐ）
-- [ ] Twitterアカウント @yuho_misfit 作成/リニューアル
-- [ ] プロフィール設計
-- [ ] 固定ツイート作成
-- [ ] 最初の10ツイート下書き
-- [ ] noteマガジン作成
-- [ ] 最初の記事公開（my-story-failures.md を完成させる）
+### Claude Code Handles ALL EXECUTION:
+- **Task tool**: Spawn and run agents concurrently for actual work
+- File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
+- Code generation and programming
+- Bash commands and system operations
+- Implementation work
+- Project navigation and analysis
+- TodoWrite and task management
+- Git operations
+- Package management
+- Testing and debugging
 
-### Phase 2（4-6ヶ月後）
-- [ ] 哲学者モード @yuho_think 開始
+### MCP Tools ONLY COORDINATE:
+- Swarm initialization (topology setup)
+- Agent type definitions (coordination patterns)
+- Task orchestration (high-level planning)
+- Memory management
+- Neural features
+- Performance tracking
+- GitHub integration
 
-### Phase 3（7-12ヶ月後）
-- [ ] 技術経営 @yuho_tech_ceo 開始
-- [ ] 学習理論 @yuho_learning 開始
+**KEY**: MCP coordinates the strategy, Claude Code's Task tool executes with real agents.
 
----
-
-## MCP連携
-
-### note.com投稿
-```
-mcp__Note__publish_note: Markdownファイルからnote.comに記事を公開
-mcp__Note__save_draft: 下書き保存
-```
-
-### 画像生成
-```
-mcp__nanobanana__nanobanana_generate: テキストから画像生成
-```
-
----
-
-## よく使うコマンド
+## 🚀 Quick Setup
 
 ```bash
-# ローカル実行
-cd /Users/administrator/Dev/yuhoito
-npx serve . -p 3000
-
-# デプロイ（自動）
-git add -A && git commit -m "message" && git push
-
-# Supabaseにデータ挿入（curl）
-curl -X POST 'https://bjnyvjtilklrfbnnnybi.supabase.co/rest/v1/yuho_articles' \
-  -H "apikey: [ANON_KEY]" \
-  -H "Content-Type: application/json" \
-  -d '[{"title":"...","branding_type":"...","status":"idea"}]'
+# Add MCP servers (Claude Flow required, others optional)
+claude mcp add claude-flow npx claude-flow@alpha mcp start
+claude mcp add ruv-swarm npx ruv-swarm mcp start  # Optional: Enhanced coordination
+claude mcp add flow-nexus npx flow-nexus@latest mcp start  # Optional: Cloud features
 ```
+
+## MCP Tool Categories
+
+### Coordination
+`swarm_init`, `agent_spawn`, `task_orchestrate`
+
+### Monitoring
+`swarm_status`, `agent_list`, `agent_metrics`, `task_status`, `task_results`
+
+### Memory & Neural
+`memory_usage`, `neural_status`, `neural_train`, `neural_patterns`
+
+### GitHub Integration
+`github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`
+
+### System
+`benchmark_run`, `features_detect`, `swarm_monitor`
+
+### Flow-Nexus MCP Tools (Optional Advanced Features)
+Flow-Nexus extends MCP capabilities with 70+ cloud-based orchestration tools:
+
+**Key MCP Tool Categories:**
+- **Swarm & Agents**: `swarm_init`, `swarm_scale`, `agent_spawn`, `task_orchestrate`
+- **Sandboxes**: `sandbox_create`, `sandbox_execute`, `sandbox_upload` (cloud execution)
+- **Templates**: `template_list`, `template_deploy` (pre-built project templates)
+- **Neural AI**: `neural_train`, `neural_patterns`, `seraphina_chat` (AI assistant)
+- **GitHub**: `github_repo_analyze`, `github_pr_manage` (repository management)
+- **Real-time**: `execution_stream_subscribe`, `realtime_subscribe` (live monitoring)
+- **Storage**: `storage_upload`, `storage_list` (cloud file management)
+
+**Authentication Required:**
+- Register: `mcp__flow-nexus__user_register` or `npx flow-nexus@latest register`
+- Login: `mcp__flow-nexus__user_login` or `npx flow-nexus@latest login`
+- Access 70+ specialized MCP tools for advanced orchestration
+
+## 🚀 Agent Execution Flow with Claude Code
+
+### The Correct Pattern:
+
+1. **Optional**: Use MCP tools to set up coordination topology
+2. **REQUIRED**: Use Claude Code's Task tool to spawn agents that do actual work
+3. **REQUIRED**: Each agent runs hooks for coordination
+4. **REQUIRED**: Batch all operations in single messages
+
+### Example Full-Stack Development:
+
+```javascript
+// Single message with all agent spawning via Claude Code's Task tool
+[Parallel Agent Execution]:
+  Task("Backend Developer", "Build REST API with Express. Use hooks for coordination.", "backend-dev")
+  Task("Frontend Developer", "Create React UI. Coordinate with backend via memory.", "coder")
+  Task("Database Architect", "Design PostgreSQL schema. Store schema in memory.", "code-analyzer")
+  Task("Test Engineer", "Write Jest tests. Check memory for API contracts.", "tester")
+  Task("DevOps Engineer", "Setup Docker and CI/CD. Document in memory.", "cicd-engineer")
+  Task("Security Auditor", "Review authentication. Report findings via hooks.", "reviewer")
+  
+  // All todos batched together
+  TodoWrite { todos: [...8-10 todos...] }
+  
+  // All file operations together
+  Write "backend/server.js"
+  Write "frontend/App.jsx"
+  Write "database/schema.sql"
+```
+
+## 📋 Agent Coordination Protocol
+
+### Every Agent Spawned via Task Tool MUST:
+
+**1️⃣ BEFORE Work:**
+```bash
+npx claude-flow@alpha hooks pre-task --description "[task]"
+npx claude-flow@alpha hooks session-restore --session-id "swarm-[id]"
+```
+
+**2️⃣ DURING Work:**
+```bash
+npx claude-flow@alpha hooks post-edit --file "[file]" --memory-key "swarm/[agent]/[step]"
+npx claude-flow@alpha hooks notify --message "[what was done]"
+```
+
+**3️⃣ AFTER Work:**
+```bash
+npx claude-flow@alpha hooks post-task --task-id "[task]"
+npx claude-flow@alpha hooks session-end --export-metrics true
+```
+
+## 🎯 Concurrent Execution Examples
+
+### ✅ CORRECT WORKFLOW: MCP Coordinates, Claude Code Executes
+
+```javascript
+// Step 1: MCP tools set up coordination (optional, for complex tasks)
+[Single Message - Coordination Setup]:
+  mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-flow__agent_spawn { type: "researcher" }
+  mcp__claude-flow__agent_spawn { type: "coder" }
+  mcp__claude-flow__agent_spawn { type: "tester" }
+
+// Step 2: Claude Code Task tool spawns ACTUAL agents that do the work
+[Single Message - Parallel Agent Execution]:
+  // Claude Code's Task tool spawns real agents concurrently
+  Task("Research agent", "Analyze API requirements and best practices. Check memory for prior decisions.", "researcher")
+  Task("Coder agent", "Implement REST endpoints with authentication. Coordinate via hooks.", "coder")
+  Task("Database agent", "Design and implement database schema. Store decisions in memory.", "code-analyzer")
+  Task("Tester agent", "Create comprehensive test suite with 90% coverage.", "tester")
+  Task("Reviewer agent", "Review code quality and security. Document findings.", "reviewer")
+  
+  // Batch ALL todos in ONE call
+  TodoWrite { todos: [
+    {id: "1", content: "Research API patterns", status: "in_progress", priority: "high"},
+    {id: "2", content: "Design database schema", status: "in_progress", priority: "high"},
+    {id: "3", content: "Implement authentication", status: "pending", priority: "high"},
+    {id: "4", content: "Build REST endpoints", status: "pending", priority: "high"},
+    {id: "5", content: "Write unit tests", status: "pending", priority: "medium"},
+    {id: "6", content: "Integration tests", status: "pending", priority: "medium"},
+    {id: "7", content: "API documentation", status: "pending", priority: "low"},
+    {id: "8", content: "Performance optimization", status: "pending", priority: "low"}
+  ]}
+  
+  // Parallel file operations
+  Bash "mkdir -p app/{src,tests,docs,config}"
+  Write "app/package.json"
+  Write "app/src/server.js"
+  Write "app/tests/server.test.js"
+  Write "app/docs/API.md"
+```
+
+### ❌ WRONG (Multiple Messages):
+```javascript
+Message 1: mcp__claude-flow__swarm_init
+Message 2: Task("agent 1")
+Message 3: TodoWrite { todos: [single todo] }
+Message 4: Write "file.js"
+// This breaks parallel coordination!
+```
+
+## Performance Benefits
+
+- **84.8% SWE-Bench solve rate**
+- **32.3% token reduction**
+- **2.8-4.4x speed improvement**
+- **27+ neural models**
+
+## Hooks Integration
+
+### Pre-Operation
+- Auto-assign agents by file type
+- Validate commands for safety
+- Prepare resources automatically
+- Optimize topology by complexity
+- Cache searches
+
+### Post-Operation
+- Auto-format code
+- Train neural patterns
+- Update memory
+- Analyze performance
+- Track token usage
+
+### Session Management
+- Generate summaries
+- Persist state
+- Track metrics
+- Restore context
+- Export workflows
+
+## Advanced Features (v2.0.0)
+
+- 🚀 Automatic Topology Selection
+- ⚡ Parallel Execution (2.8-4.4x speed)
+- 🧠 Neural Training
+- 📊 Bottleneck Analysis
+- 🤖 Smart Auto-Spawning
+- 🛡️ Self-Healing Workflows
+- 💾 Cross-Session Memory
+- 🔗 GitHub Integration
+
+## Integration Tips
+
+1. Start with basic swarm init
+2. Scale agents gradually
+3. Use memory for context
+4. Monitor progress regularly
+5. Train patterns from success
+6. Enable hooks automation
+7. Use GitHub tools first
+
+## Support
+
+- Documentation: https://github.com/ruvnet/claude-flow
+- Issues: https://github.com/ruvnet/claude-flow/issues
+- Flow-Nexus Platform: https://flow-nexus.ruv.io (registration required for cloud features)
 
 ---
 
-## 注意事項
+Remember: **Claude Flow coordinates, Claude Code creates!**
 
-- Supabase anon keyはjs/config.jsに記載（公開リポジトリ注意）
-- RLSポリシーは現在オープン（本番運用時は要設定）
-- 画像生成はnanobanana MCPを使用（Gemini経由）
-
----
-
-## note.com 投稿ルール
-
-### Markdownテーブルは使えない
-note.comはMarkdownのテーブル記法（`| col1 | col2 |`）をサポートしていない。
-テーブルを使いたい場合は **nanobananaで画像化** して挿入する。
-
-```
-例: ADHDの特性テーブル → img/adhd-table.jpg として画像化済み
-```
-
-### 画像を積極的に挿入する
-記事には画像を積極的に挿入すること。テキストだけの記事は読まれにくい。
-- サムネイル画像（必須）
-- 本文中の挿入画像（セクションごとに1枚程度）
-- 図解・インフォグラフィック（複雑な概念の説明時）
-
-### 下書きデータ管理
-- 下書きは `js/drafts.js` で管理
-- ダッシュボード（index.html）から確認・コピー可能
-- 画像は `img/` フォルダに保存
+# important-instruction-reminders
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+Never save working files, text/mds and tests to the root folder.
