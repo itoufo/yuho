@@ -76,6 +76,30 @@
       </div>
     </div>
 
+    <div class="card" id="x-posts-section">
+      <div class="card-header">
+        <h2>𝕏 投稿管理</h2>
+        <div style="display:flex;gap:8px;">
+          <select id="x-posts-filter" onchange="loadXPosts()" style="padding:6px 12px;border:1px solid #e2e8f0;border-radius:6px;">
+            <option value="draft">下書き</option>
+            <option value="scheduled">予約済み</option>
+            <option value="posted">投稿済み</option>
+            <option value="all">すべて</option>
+          </select>
+          <button class="btn btn-sm btn-primary" onclick="showNewXPostModal()">+ 新規作成</button>
+          <button class="btn btn-secondary btn-sm" onclick="loadXPosts()">更新</button>
+        </div>
+      </div>
+      <div id="x-posts-stats" style="display:flex;gap:16px;padding:12px 0;border-bottom:1px solid #e2e8f0;margin-bottom:16px;">
+        <span><strong id="x-draft-count">-</strong> 下書き</span>
+        <span><strong id="x-scheduled-count">-</strong> 予約済み</span>
+        <span><strong id="x-posted-count">-</strong> 投稿済み</span>
+      </div>
+      <div id="x-posts-list">
+        <p class="empty">読み込み中...</p>
+      </div>
+    </div>
+
     <div class="card" id="suggestions-section">
       <div class="card-header">
         <h2>📝 書くべき記事（優先順位順）</h2>
@@ -101,6 +125,9 @@
   <script src="js/drafts.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
+      // X投稿を読み込み
+      loadXPosts();
+
       // 統計情報取得
       const { data: articles } = await supabaseClient.from('yuho_articles').select('*');
 
@@ -340,6 +367,211 @@
       `;
       document.body.appendChild(modal);
       modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    }
+
+    // ========== X投稿管理 ==========
+    const categoryLabels = {
+      adhd_relatable: 'ADHDあるある',
+      work_struggle: '会社員つらい',
+      failure_story: '失敗談',
+      hope: '希望系',
+      ai_life: 'AI×人生',
+      question: '問いかけ'
+    };
+
+    const categoryColors = {
+      adhd_relatable: '#8b5cf6',
+      work_struggle: '#ef4444',
+      failure_story: '#f97316',
+      hope: '#22c55e',
+      ai_life: '#3b82f6',
+      question: '#06b6d4'
+    };
+
+    async function loadXPosts() {
+      const container = document.getElementById('x-posts-list');
+      const filter = document.getElementById('x-posts-filter').value;
+      container.innerHTML = '<p class="empty">読み込み中...</p>';
+
+      // 統計取得
+      const { data: allPosts } = await supabaseClient.from('yuho_x_posts').select('status');
+      if (allPosts) {
+        document.getElementById('x-draft-count').textContent = allPosts.filter(p => p.status === 'draft').length;
+        document.getElementById('x-scheduled-count').textContent = allPosts.filter(p => p.status === 'scheduled').length;
+        document.getElementById('x-posted-count').textContent = allPosts.filter(p => p.status === 'posted').length;
+      }
+
+      // フィルタ適用して取得
+      let query = supabaseClient.from('yuho_x_posts').select('*').order('priority', { ascending: false });
+      if (filter !== 'all') {
+        query = query.eq('status', filter);
+      }
+      const { data, error } = await query.limit(20);
+
+      if (error) {
+        container.innerHTML = '<p class="empty">エラー: ' + error.message + '</p>';
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<p class="empty">投稿がありません</p>';
+        return;
+      }
+
+      container.innerHTML = data.map(post => `
+        <div style="border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">
+            <div style="flex:1;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <span style="background:${post.priority >= 5 ? '#ef4444' : post.priority >= 3 ? '#f97316' : '#22c55e'};color:white;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;">
+                  P${post.priority}
+                </span>
+                ${post.category ? `<span style="background:${categoryColors[post.category] || '#6b7280'};color:white;padding:2px 8px;border-radius:4px;font-size:0.75rem;">${categoryLabels[post.category] || post.category}</span>` : ''}
+                <span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:4px;font-size:0.75rem;">${post.status}</span>
+                <span style="color:#9ca3af;font-size:0.75rem;">${post.content.length}/280</span>
+              </div>
+              <pre style="margin:0;white-space:pre-wrap;font-family:inherit;font-size:0.95rem;line-height:1.5;">${post.content}</pre>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px;min-width:100px;">
+              <button class="btn btn-sm" style="background:#000;color:#fff;" onclick="postToX(${post.id})">Xに投稿</button>
+              <button class="btn btn-sm btn-secondary" onclick="copyXPost(${post.id})">コピー</button>
+              <button class="btn btn-sm btn-secondary" onclick="editXPost(${post.id})">編集</button>
+              <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;" onclick="deleteXPost(${post.id})">削除</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showNewXPostModal() {
+      showXPostEditModal(null);
+    }
+
+    async function editXPost(id) {
+      const { data } = await supabaseClient.from('yuho_x_posts').select('*').eq('id', id).single();
+      if (data) showXPostEditModal(data);
+    }
+
+    function showXPostEditModal(post) {
+      const isNew = !post;
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000;';
+      modal.innerHTML = `
+        <div style="background:white;border-radius:12px;max-width:600px;width:90%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
+          <div style="padding:16px 24px;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;background:#000;color:#fff;">
+            <h3 style="margin:0;">${isNew ? '新規X投稿' : 'X投稿を編集'}</h3>
+            <button onclick="this.closest('.modal').remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#fff;">&times;</button>
+          </div>
+          <div style="padding:24px;overflow-y:auto;flex:1;">
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-weight:600;margin-bottom:4px;">本文 <span id="char-count" style="font-weight:normal;color:#6b7280;">${post?.content?.length || 0}/280</span></label>
+              <textarea id="x-post-content" style="width:100%;height:150px;padding:12px;border:1px solid #e2e8f0;border-radius:8px;resize:vertical;font-size:1rem;" oninput="document.getElementById('char-count').textContent = this.value.length + '/280'">${post?.content || ''}</textarea>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div>
+                <label style="display:block;font-weight:600;margin-bottom:4px;">カテゴリ</label>
+                <select id="x-post-category" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;">
+                  <option value="">未分類</option>
+                  <option value="adhd_relatable" ${post?.category === 'adhd_relatable' ? 'selected' : ''}>ADHDあるある</option>
+                  <option value="work_struggle" ${post?.category === 'work_struggle' ? 'selected' : ''}>会社員つらい</option>
+                  <option value="failure_story" ${post?.category === 'failure_story' ? 'selected' : ''}>失敗談</option>
+                  <option value="hope" ${post?.category === 'hope' ? 'selected' : ''}>希望系</option>
+                  <option value="ai_life" ${post?.category === 'ai_life' ? 'selected' : ''}>AI×人生</option>
+                  <option value="question" ${post?.category === 'question' ? 'selected' : ''}>問いかけ</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-weight:600;margin-bottom:4px;">優先度</label>
+                <select id="x-post-priority" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;">
+                  <option value="5" ${post?.priority === 5 ? 'selected' : ''}>5（最高）</option>
+                  <option value="4" ${post?.priority === 4 ? 'selected' : ''}>4</option>
+                  <option value="3" ${!post || post?.priority === 3 ? 'selected' : ''}>3（普通）</option>
+                  <option value="2" ${post?.priority === 2 ? 'selected' : ''}>2</option>
+                  <option value="1" ${post?.priority === 1 ? 'selected' : ''}>1（低）</option>
+                  <option value="0" ${post?.priority === 0 ? 'selected' : ''}>0</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label style="display:block;font-weight:600;margin-bottom:4px;">ステータス</label>
+              <select id="x-post-status" style="width:100%;padding:8px;border:1px solid #e2e8f0;border-radius:6px;">
+                <option value="draft" ${!post || post?.status === 'draft' ? 'selected' : ''}>下書き</option>
+                <option value="scheduled" ${post?.status === 'scheduled' ? 'selected' : ''}>予約済み</option>
+                <option value="posted" ${post?.status === 'posted' ? 'selected' : ''}>投稿済み</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-primary" style="background:#000;" onclick="saveXPost(${post?.id || 'null'})">${isNew ? '作成' : '保存'}</button>
+              <button class="btn btn-secondary" onclick="this.closest('.modal').remove()">キャンセル</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    }
+
+    async function saveXPost(id) {
+      const content = document.getElementById('x-post-content').value.trim();
+      const category = document.getElementById('x-post-category').value || null;
+      const priority = parseInt(document.getElementById('x-post-priority').value);
+      const status = document.getElementById('x-post-status').value;
+
+      if (!content) {
+        alert('本文を入力してください');
+        return;
+      }
+
+      if (content.length > 280) {
+        alert('280文字以内にしてください');
+        return;
+      }
+
+      const postData = { content, category, priority, status };
+
+      let error;
+      if (id) {
+        ({ error } = await supabaseClient.from('yuho_x_posts').update(postData).eq('id', id));
+      } else {
+        ({ error } = await supabaseClient.from('yuho_x_posts').insert([postData]));
+      }
+
+      if (error) {
+        alert('保存エラー: ' + error.message);
+        return;
+      }
+
+      document.querySelector('.modal').remove();
+      loadXPosts();
+    }
+
+    async function deleteXPost(id) {
+      if (!confirm('この投稿を削除しますか？')) return;
+      const { error } = await supabaseClient.from('yuho_x_posts').delete().eq('id', id);
+      if (error) {
+        alert('削除エラー: ' + error.message);
+        return;
+      }
+      loadXPosts();
+    }
+
+    async function copyXPost(id) {
+      const { data } = await supabaseClient.from('yuho_x_posts').select('content').eq('id', id).single();
+      if (data) {
+        navigator.clipboard.writeText(data.content);
+        alert('コピーしました');
+      }
+    }
+
+    async function postToX(id) {
+      const { data } = await supabaseClient.from('yuho_x_posts').select('content').eq('id', id).single();
+      if (data) {
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(data.content)}`, '_blank');
+        // ステータスを投稿済みに更新
+        await supabaseClient.from('yuho_x_posts').update({ status: 'posted', posted_at: new Date().toISOString() }).eq('id', id);
+        loadXPosts();
+      }
     }
   </script>
 </body>

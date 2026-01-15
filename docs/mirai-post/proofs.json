@@ -1,0 +1,115 @@
+{
+  "proofs": [
+    {
+      "id": "enterprise_scale_delivery",
+      "title": "150人月超の大規模リプレースを無事故で運用",
+      "category": "engineering_management",
+      "summary": "大規模EC/基幹システムの設計・開発・テスト管理を統括",
+      "metrics": [
+        "総工数150人月超",
+        "1000万件超の購買データ移行",
+        "2年間大きな障害なく運用"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "mirai_post_xopt_velocity",
+      "title": "MirAI-POST（旧xopt）を8日で本番稼働",
+      "category": "product_delivery",
+      "summary": "マルチプラットフォーム統合とAI投稿生成を含むPR基盤を短期構築",
+      "metrics": [
+        "開発期間8日",
+        "165 commits",
+        "総コード行数44,406 lines",
+        "Edge Functions 37",
+        "DBマイグレーション78",
+        "48 pages / 38 components"
+      ],
+      "source": "user_provided"
+    },
+    {
+      "id": "online_event_scale",
+      "title": "オンライン展示会で同時接続2000人超を実現",
+      "category": "platform_delivery",
+      "summary": "コロナ禍対応のオンラインイベント基盤を設計・実装",
+      "metrics": [
+        "同時接続2000人以上",
+        "商談予約・入札機能を実装"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "ai_friends_retention",
+      "title": "AIフレンズ継続率90%",
+      "category": "community",
+      "summary": "AI学習コミュニティを高い継続率で運営",
+      "metrics": [
+        "継続率90%"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "digitech_quest_impact",
+      "title": "Digitech Questの満足度4.8/5",
+      "category": "education_business",
+      "summary": "産学連携DXプログラムの設計・実施",
+      "metrics": [
+        "参加満足度4.8/5",
+        "97%がキャリアに活かせると回答"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "two_days_camp",
+      "title": "学習期間を3年→2日に短縮する設計",
+      "category": "education_system",
+      "summary": "AIプログラミング2Daysキャンプの設計と運営",
+      "metrics": [
+        "従来3年の学習を2日に短縮"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "jdla_lecturer",
+      "title": "JDLA認定講座の講師・教材作成",
+      "category": "education_authority",
+      "summary": "E検定認定講座の教材提案と講義を担当",
+      "metrics": [
+        "JDLA認定講座講師"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "lawsuit_win",
+      "title": "本人訴訟で勝訴",
+      "category": "business_resilience",
+      "summary": "AI価格最適化案件の訴訟で本人対応し勝訴",
+      "metrics": [
+        "本人訴訟で勝訴"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "large_scale_pos",
+      "title": "WEBPOSを3人/半年で完成",
+      "category": "product_delivery",
+      "summary": "WebSocket連携の店舗システムを少人数で構築",
+      "metrics": [
+        "開発3人",
+        "約半年"
+      ],
+      "source": "docs/profile.md"
+    },
+    {
+      "id": "seo_results",
+      "title": "SEOで複数キーワード1位を獲得",
+      "category": "marketing",
+      "summary": "学生時代にSEOで成果を出し収益化",
+      "metrics": [
+        "「恋愛術」でGoogle 1位",
+        "「大学受験 参考書」でGoogle 1位"
+      ],
+      "source": "docs/profile.md"
+    }
+  ]
+}

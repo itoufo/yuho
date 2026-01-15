@@ -1,0 +1,171 @@
+{
+  "identity": {
+    "name": "伊東雄歩",
+    "nickname": "ゆぽゆぽ",
+    "title": "MirAI-POST / 再現性PR OS",
+    "brand": "令和のエジソン",
+    "coreWorldview": "普通に適応できない人でも、構造とAIで世界を変えられる",
+    "oneLiner": "成果は偶然ではなく、意思決定と設計の再現性から生まれる",
+    "origin": "神奈川県横須賀市",
+    "birthYear": "1990",
+    "education": "横須賀高校 → 東北大学",
+    "role": "株式会社ウォーカー 代表取締役"
+  },
+  "highlights": [
+    "経営・教育・AIの交差点で再現性を作る",
+    "速さは才能ではなく設計の副作用",
+    "努力を否定せず、構造で摩耗を減らす",
+    "世界観に共鳴する仲間とプロジェクトを量産"
+  ],
+  "heroStats": [
+    { "label": "大規模PJ運用", "value": "150人月超" },
+    { "label": "教育実績", "value": "満足度4.8/5" },
+    { "label": "コミュニティ継続", "value": "90%" },
+    { "label": "超短期構築", "value": "8日" }
+  ],
+  "traits": [
+    "IQ130超 / MENSA会員",
+    "ADHD気質（遅刻癖・忘れ物癖・敬語が使えない）",
+    "好奇心の塊、失敗を恐れない",
+    "わからないから始める実践派"
+  ],
+  "credentials": [
+    "NLPマスタープラクティショナー",
+    "JDLA認定講座 講師",
+    "健全AI教育協会（HAIIA）理事"
+  ],
+  "corePrinciples": [
+    {
+      "title": "結果→構造→世界観",
+      "description": "最初に成果を提示し、再現可能な構造を示した上で思想を語る。"
+    },
+    {
+      "title": "速さは設計の副作用",
+      "description": "速度は目的ではない。意思決定と設計の明確さが速度を生む。"
+    },
+    {
+      "title": "努力を否定しない",
+      "description": "努力を摩耗させないために構造を作る。"
+    }
+  ],
+  "proofs": [
+    {
+      "title": "150人月超の大規模リプレース",
+      "detail": "1000万件超のデータ移行を無事故運用",
+      "tag": "経営×開発"
+    },
+    {
+      "title": "Digitech Quest 4.8/5",
+      "detail": "97%がキャリアに活かせると回答",
+      "tag": "教育×実装"
+    },
+    {
+      "title": "AIフレンズ継続率90%",
+      "detail": "学びが続く仕組みを設計",
+      "tag": "コミュニティ"
+    },
+    {
+      "title": "MirAI-POSTを8日構築",
+      "detail": "165 commits / 44,406 lines",
+      "tag": "再現性"
+    },
+    {
+      "title": "同時接続2000人超",
+      "detail": "オンライン展示会プラットフォーム",
+      "tag": "スケール"
+    },
+    {
+      "title": "JDLA認定講座 講師",
+      "detail": "教材設計と講義を担当",
+      "tag": "権威"
+    }
+  ],
+  "philosophy": [
+    {
+      "title": "世界征服",
+      "body": "世界政府ではなく、価値観の更新を目指す。"
+    },
+    {
+      "title": "英雄然として歩む",
+      "body": "名前のコンプレックスを使命へ変えた。"
+    },
+    {
+      "title": "失敗は経験の元",
+      "body": "失敗の数が、再現性の厚みになる。"
+    },
+    {
+      "title": "1秒の価値",
+      "body": "自分の1秒を誰のために使うかで世界が変わる。"
+    }
+  ],
+  "communityDesign": [
+    {
+      "title": "設計思想の解体",
+      "detail": "成果の裏側にある構造を分解して共有する。"
+    },
+    {
+      "title": "意思決定ジャーナル",
+      "detail": "判断の言語化で再現性を作る。"
+    },
+    {
+      "title": "リバース設計レビュー",
+      "detail": "参加者の案件を逆算で再設計する。"
+    }
+  ],
+  "partnerNeeds": [
+    "私にないスキルを持つ経営者/起業家",
+    "実装・営業・プロダクトのいずれかに強い人",
+    "世界観に共鳴し、長期でプロジェクトを作れる人"
+  ],
+  "initiatives": [
+    {
+      "title": "Digitech Quest",
+      "detail": "産学連携DXプログラムを全国展開"
+    },
+    {
+      "title": "AIプログラミング2Daysキャンプ",
+      "detail": "従来3年の学習を2日に圧縮"
+    },
+    {
+      "title": "AIフレンズ",
+      "detail": "継続率90%の学習コミュニティ"
+    },
+    {
+      "title": "AI類語辞典『ルイタン』",
+      "detail": "AI実務を支えるプロダクト"
+    }
+  ],
+  "skills": {
+    "languages": ["Python", "PHP", "Ruby", "JavaScript", "TypeScript", "C#", "Java", "Swift"],
+    "frameworks": ["Laravel", "Django", "Ruby on Rails", "React", "Vue.js", "React Native", "Unity"],
+    "infra": ["AWS", "Firebase", "Docker", "MySQL", "PostgreSQL", "MongoDB", "Redis", "ElasticSearch"],
+    "ai": ["TensorFlow", "scikit-learn", "Pandas", "OpenCV"]
+  },
+  "timeline": [
+    {
+      "year": "2015",
+      "event": "株式会社ウォーカー設立、AI教材StoQを開発"
+    },
+    {
+      "year": "2017",
+      "event": "JDLA認定講座講師として教材作成・登壇"
+    },
+    {
+      "year": "2019",
+      "event": "大規模基幹システム/ECリプレースに参画"
+    },
+    {
+      "year": "2020",
+      "event": "オンライン展示会サービスを構築（同時接続2000人超）"
+    },
+    {
+      "year": "2023",
+      "event": "大規模ECスクラッチ移行を設計・統括"
+    },
+    {
+      "year": "2024-2025",
+      "event": "AIコミュニティ・教育事業へ注力"
+    }
+  ],
+  "contactEmail": "contact@example.com"
+}
