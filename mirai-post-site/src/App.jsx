@@ -1,4 +1,5 @@
 import profile from "./data/profile.json";
+import youtubeIdeas from "./data/youtube-ideas.json";
 
 export default function App() {
   return (
@@ -10,8 +11,11 @@ export default function App() {
             <a href="#profile">プロフィールDB</a>
             <a href="#capability">能力・実装</a>
             <a href="#proof">実績DB</a>
+            <a href="#youtube">YouTube企画</a>
             <a href="#philosophy">哲学</a>
             <a href="#community">コミュニティ</a>
+            <a href="/community.html">道場LP</a>
+            <a href="/chrome-extension.html">Chrome拡張</a>
             <a href="#collab">協業</a>
           </div>
         </nav>
@@ -195,6 +199,44 @@ export default function App() {
               <span className="tag">{item.tag}</span>
               <h3>{item.title}</h3>
               <p>{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" id="youtube">
+        <div className="section-head">
+          <p className="eyebrow">YouTube企画</p>
+          <h2>再現性と世界観を伝えるネタ帳</h2>
+        </div>
+        <div className="grid two">
+          {youtubeIdeas.ideas.map((idea, index) => (
+            <article className="card idea" style={{ "--delay": `${index * 80}ms` }} key={idea.title}>
+              <span className="tag">{idea.target}</span>
+              <div className="thumb">
+                {idea.thumbnailPath ? (
+                  <img src={idea.thumbnailPath} alt={`${idea.title} thumbnail`} />
+                ) : (
+                  <div className="thumb-placeholder">
+                    <span>THUMBNAIL</span>
+                    <p>nanobananaで生成予定</p>
+                  </div>
+                )}
+              </div>
+              <h3>{idea.title}</h3>
+              <p>{idea.hook}</p>
+              {idea.outline && (
+                <ul className="idea-list">
+                  {idea.outline.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              )}
+              {idea.thumbnailPrompt && (
+                <p className="thumb-prompt">
+                  Thumbnail: {idea.thumbnailPrompt}
+                </p>
+              )}
             </article>
           ))}
         </div>
