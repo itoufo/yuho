@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xopt Chrome拡張 — AI投稿アシスタント | MirAI-POST</title>
+  <meta name="description" content="xoptのAI投稿アシスタントをChromeに。X上でワンクリックでAI返信・引用・投稿を生成。" />
+  <meta property="og:title" content="xopt Chrome拡張 — AI投稿アシスタント" />
+  <meta property="og:description" content="X上でワンクリックでAI返信・引用・投稿を生成。xoptのChrome拡張をインストール。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mirai-post.netlify.app/chrome-extension" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --bg-alt: #f0ebe4;
+      --text: #1c1917;
+      --muted: #4b453f;
+      --accent: #1d9bf0;
+      --accent-dark: #1a8cd8;
+      --card: #ffffff;
+      --line: rgba(28, 25, 23, 0.1);
+      --shadow: 0 18px 40px rgba(28, 25, 23, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Zen Kaku Gothic New", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top right, #c7dff2 0%, transparent 40%),
+        radial-gradient(circle at 15% 30%, #d2e0ea 0%, transparent 40%),
+        var(--bg);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ---- Nav ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 8vw;
+    }
+
+    .logo {
+      font-family: "Shippori Mincho", serif;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ---- Hero ---- */
+    .hero {
+      padding: 60px 8vw 80px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .hero-copy h1 {
+      font-family: "Shippori Mincho", serif;
+      font-size: clamp(28px, 3.5vw, 42px);
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .hero-copy h1 span { color: var(--accent); }
+
+    .lead {
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .version-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(29, 155, 240, 0.1);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 48px rgba(29, 155, 240, 0.3);
+    }
+
+    .download-btn svg { width: 20px; height: 20px; fill: white; }
+
+    .download-meta {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .hero-visual {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .feature-card {
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: var(--bg);
+    }
+
+    .feature-card .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(29, 155, 240, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .feature-card .icon svg { width: 18px; height: 18px; fill: var(--accent); }
+
+    .feature-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      padding: 80px 8vw;
+    }
+
+    .section:nth-of-type(even) { background: var(--bg-alt); }
+
+    .section-head {
+      margin-bottom: 32px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .section-head h2 {
+      font-family: "Shippori Mincho", serif;
+      font-size: clamp(24px, 3vw, 32px);
+    }
+
+    /* ---- Install steps ---- */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      counter-reset: step;
+    }
+
+    .step {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 28px;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 24px rgba(28, 25, 23, 0.08);
+      counter-increment: step;
+      position: relative;
+    }
+
+    .step::before {
+      content: counter(step);
+      position: absolute;
+      top: -14px;
+      left: 24px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .step code {
+      display: block;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: var(--bg-alt);
+      font-size: 13px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      color: var(--text);
+      word-break: break-all;
+    }
+
+    /* ---- Requirements ---- */
+    .req-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .req-card {
+      background: var(--card);
+      border-radius: 22px;
+      padding: 24px;
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 24px rgba(28, 25, 23, 0.08);
+    }
+
+    .req-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .req-card ul {
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .req-card li {
+      padding-left: 20px;
+      position: relative;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .req-card li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* ---- CTA ---- */
+    .cta-section {
+      text-align: center;
+      padding: 80px 8vw;
+    }
+
+    .cta-section h2 {
+      font-family: "Shippori Mincho", serif;
+      font-size: clamp(24px, 3vw, 32px);
+      margin-bottom: 16px;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      margin-bottom: 28px;
+      font-size: 16px;
+    }
+
+    .cta-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .cta-links a {
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      transition: all 0.3s;
+    }
+
+    .cta-links a:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* ---- Footer ---- */
+    .footer {
+      padding: 40px 8vw;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.08em;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .req-grid { grid-template-columns: 1fr; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .nav { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .nav-links { flex-wrap: wrap; gap: 12px; }
+      .hero { padding: 40px 6vw 60px; }
+      .section { padding: 60px 6vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="logo">MirAI-POST</a>
+    <div class="nav-links">
+      <a href="/">トップ</a>
+      <a href="https://app.sns-opt.com" target="_blank">xoptダッシュボード</a>
+      <a href="https://app.sns-opt.com/docs" target="_blank">ドキュメント</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="version-badge">v1.0.0 — Chrome拡張</span>
+      <h1>
+        X上でそのまま<br>
+        <span>AI投稿アシスタント</span>
+      </h1>
+      <p class="lead">
+        xoptのAIをChrome拡張に。タイムライン上のツイートにワンクリックでAI返信・引用コメントを生成。フローティングボタンからテーマを入力するだけで投稿も。
+      </p>
+      <a href="/xopt-chrome-extension.zip" download class="download-btn">
+        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+        ダウンロード（.zip）
+      </a>
+      <p class="download-meta">16KB — Chrome / Edge / Brave 対応 — Manifest V3</p>
+    </div>
+
+    <div class="hero-visual">
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+          </div>
+          <h3>AI返信</h3>
+          <p>ツイートごとに「返信」ボタン。文脈に合った返信をAIが生成</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+          </div>
+          <h3>AI引用</h3>
+          <p>引用ツイート用のコメントをAIが独自視点で生成</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M11 21h-1l1-7H7.5c-.58 0-.57-.32-.38-.66l.07-.12C8.48 10.94 10.42 7.54 13 3h1l-1 7h3.5c.49 0 .56.33.47.51l-.07.15C12.96 17.55 11 21 11 21z"/></svg>
+          </div>
+          <h3>クイック投稿</h3>
+          <p>フローティングボタンからテーマ入力。カテゴリ・トーン選択可</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          </div>
+          <h3>安全設計</h3>
+          <p>APIキーはローカル保存。投稿は自動送信せず確認後に手動</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">インストール</p>
+      <h2>3ステップで完了</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>ダウンロード&展開</h3>
+        <p>上のボタンからzipをダウンロードし、任意の場所に展開します。</p>
+      </div>
+      <div class="step">
+        <h3>Chromeに読み込み</h3>
+        <p>Chromeで以下を開き、「デベロッパーモード」をON。「パッケージ化されていない拡張機能を読み込む」をクリックし、展開したフォルダを選択。</p>
+        <code>chrome://extensions</code>
+      </div>
+      <div class="step">
+        <h3>APIキー設定</h3>
+        <p>ブラウザ右上の拡張機能アイコンをクリック。xoptダッシュボードで発行したAPIキー（<code style="display:inline;padding:2px 6px;margin:0">xopt_xxxx...</code>）を入力して「接続テスト」。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Requirements -->
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">動作環境</p>
+      <h2>必要なもの</h2>
+    </div>
+    <div class="req-grid">
+      <div class="req-card">
+        <h3>ブラウザ</h3>
+        <ul>
+          <li>Google Chrome（推奨）</li>
+          <li>Microsoft Edge</li>
+          <li>Brave</li>
+          <li>Chromium系ブラウザ全般</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <h3>xoptアカウント</h3>
+        <ul>
+          <li>xoptの有効なアカウント</li>
+          <li>APIキー（設定 → APIで発行）</li>
+          <li>generate:x 権限を持つキー</li>
+          <li>クレジット残高（AI生成に消費）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Usage -->
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">使い方</p>
+      <h2>X上でそのまま使う</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <h3>AI返信</h3>
+        <p>タイムライン上の各ツイートに追加された「返信」ボタンをクリック。ツイートの内容を読み取り、文脈に合った返信をAIが生成。返信欄に自動挿入されるので、確認・編集して送信。</p>
+      </div>
+      <div class="step">
+        <h3>AI引用</h3>
+        <p>各ツイートの「引用」ボタンをクリック。引用ツイート欄にAI生成のコメントが挿入されます。独自の視点や付加価値のあるコメントを自動生成。</p>
+      </div>
+      <div class="step">
+        <h3>クイック投稿</h3>
+        <p>画面右下のフローティングボタン（⚡）をクリック。テーマ・カテゴリ・トーンを選んで「AI生成」。プレビューを確認して「コンポーズに挿入」で投稿画面へ。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>今すぐ始めよう</h2>
+    <p>xoptのAIアシスタントで、Xの発信力を加速する。</p>
+    <a href="/xopt-chrome-extension.zip" download class="download-btn">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      ダウンロード（.zip）
+    </a>
+    <div class="cta-links">
+      <a href="https://app.sns-opt.com/settings" target="_blank">APIキーを発行</a>
+      <a href="https://app.sns-opt.com/docs/settings" target="_blank">ドキュメント</a>
+      <a href="/">MirAI-POSTトップへ</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>MirAI-POST | xopt Chrome拡張 v1.0.0</p>
+  </footer>
+
+</body>
+</html>
