@@ -44,3 +44,6 @@ hive-mind-prompt-*.txt
 # mirai-post-site build / lockfile
 mirai-post-site/dist/
 mirai-post-site/package-lock.json
+
+# 記事下書きはローカル管理（履歴は残るが追跡対象外）
+docs/drafts/
