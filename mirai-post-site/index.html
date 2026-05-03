@@ -5,6 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MirAI-POST | 伊東雄歩の再現性PR OS</title>
     <meta name="description" content="伊東雄歩の人格・実績・再現性を一目で伝えるMirAI-POST。経営者・起業志望向けのブランディング基盤。" />
+    <script>
+      // Supabase 認証リンク (recovery / signup / magiclink) で
+      // redirect_to=/ にされた場合に /reset-password.html へ転送する。
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("code") || params.get("error_code") || params.get("error")) {
+            window.location.replace("/reset-password.html" + window.location.search);
+          }
+        } catch (_) {
+          /* ignore */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

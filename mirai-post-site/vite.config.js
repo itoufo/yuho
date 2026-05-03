@@ -12,6 +12,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "index.html"),
         "chrome-extension": resolve(__dirname, "chrome-extension.html"),
+        "reset-password": resolve(__dirname, "reset-password.html"),
       },
     },
   },
